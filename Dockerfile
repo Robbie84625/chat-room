@@ -10,6 +10,6 @@ RUN npm install
 
 COPY . /usr/src/app
 
-CMD ["node", "app.js"]
+CMD ["node", "index.js"]
 
-EXPOSE 5000
+EXPOSE 4000
