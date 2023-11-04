@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <meta charset="utf-8"/>
+    <title>星空漫遊 Cosmic Voyage</title>
+    <link rel="stylesheet" type="text/css" href="/css/homePage.css"/>
+</head>
+<body>
+    <div class="custom-background">
+        <div class="main" id="login">
+            <div class="header ">
+                星空漫遊 Cosmic Voyage
+            </div>
+            <img src="/images/astronaut.gif" style="height: 150px; margin:10px 0px" alt="astronaut"/>
+            <div style="width: 75%; margin:5px auto;">
+                <div style="text-align: left;">星際代號(<span style="text-decoration: underline;"> I </span>) :</div>
+                <input type="email" placeholder="信箱" class="loginTextBox" id="loginEmail" style="margin-top: 5px;"/>
+            </div>
+            <div style="width: 75%; margin:5px auto auto;">
+                <div style="text-align: left;">通關密語(<span style="text-decoration: underline;">P</span>) :</div>
+                <input type="password" placeholder="密碼" class="loginTextBox" id="loginPassword" style="margin-top: 5px;"/>
+            </div>
+            <div style="width: 75%; margin: 20px auto 0px auto; color: red;" id="loginRemind">
+                &nbsp;
+            </div>
+            
+            <button type="button" class="btn-login" style="width: 150px;" id="login-btn"> 啟動旅程(<span style="text-decoration: underline;">S</span>)</button>
+            <div style="margin-top: 50px; font-size: 30px; font-weight: 700;color:#6A8DAD;">
+                <div>無論哪個星系</div>
+                <div>始終保持聯繫</div>
+            </div>
+            
+            <a href="#" id="switchToSignUp" style="width: 75%;position: absolute;bottom: 15px;left: 0; right: 0;margin-left: auto;margin-right: auto;">加入星際探險隊</a>
+        </div>
+
+        <div class="main" id="signUp">
+            <div class="header">
+                星空漫遊 Cosmic Voyage
+            </div>
+            <img src="/images/astronaut.gif" style="height: 150px;" alt="astronaut"/>
+            <div style="width: 75%; margin:10px auto;">
+                <div style="text-align: left;">登錄星際代號(<span style="text-decoration: underline;"> I </span>) :</div>
+                <input type="email" placeholder="登錄信箱" class="signUpTextBox" id="signUpEmail" style="margin-top: 5px;"/>
+            </div>
+            <div style="width: 75%; margin:10px auto auto;">
+                <div style="text-align: left;">登錄通關密碼(<span style="text-decoration: underline;">P</span>) :</div>
+                <input type="password" placeholder="登錄密碼" class="signUpTextBox" id="signUpPassword" style="margin-top: 5px;"/>
+            </div>
+            <div style="width: 75%; margin:10px auto auto;">
+                <div style="text-align: left;">確認通關密碼(<span style="text-decoration: underline;">P</span>) :</div>
+                <input type="password" placeholder="確認密碼" class="signUpTextBox" id="checkPassword" style="margin-top: 5px;"/>
+            </div>
+            <div style="width: 75%; margin:10px auto;">
+                <div style="text-align: left;">登錄成員姓名(<span style="text-decoration: underline;">N</span>) :</div>
+                <input type="text" placeholder="登錄姓名" class="signUpTextBox" id="signUpName" style="margin-top: 5px;"/>
+            </div>
+            <div style="width: 75%; margin:10px auto auto;">
+                <div style="text-align: left;">登錄成員呼號(<span style="text-decoration: underline;">N</span>) :</div>
+                <input type="text" placeholder="登錄暱稱" class="signUpTextBox" id="signUpNickName" style="margin-top: 5px;"/>
+            </div>
+            
+            <div id="signUpRemind" style="margin-top:15px;width: 75%; margin: 20px auto; color: red;">
+                &nbsp;
+            </div>
+            
+            <button type="button" class="btn-signOut"  id="signUp-btn" style="width: 150px;"> 啟動旅程(<span style="text-decoration: underline;">S</span>)</button>
+
+            <a href="#" id="switchToLogin" style="width: 75%;position: absolute;bottom: 15px;left: 0; right: 0;margin-left: auto;margin-right: auto;">已經是我們成員</a>
+        </div>
+    </div>
+    <script type="text/javascript" src="scripts/homePage.js"></script>
+    <script type="text/javascript" src="scripts/signUp.js"></script>
+    <script type="text/javascript" src="scripts/login.js"></script>
+</body>
+</html>

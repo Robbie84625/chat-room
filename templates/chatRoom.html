@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+    <meta charset="utf-8"/>
+    <title>星旅交流站</title>
+    <link rel="stylesheet" type="text/css" href="/css/chat.css"/>
+</head>
+<body>
+    <div>
+        <div style="display: flex; height: 100vh;">
+            <div class="nav">
+                <div class="nav__item">
+                    <img src="/images/personalFile.png" alt="personal file" class="nav__item__Icon"/>
+                    <div class="nav__item__text">個人檔案</div>
+                </div>
+                <div class="nav__item">
+                    <img src="/images/friend.png" alt="friend" class="nav__item__Icon"/>
+                    <div class="nav__item__text">好友</div>
+                </div>
+                <div class="nav__item">
+                    <img src="/images/group.png" alt="group" class="nav__item__Icon"/>
+                    <div class="nav__item__text">群組</div>
+                </div>
+                <div class="nav__item">
+                    <img src="/images/chat_icon.png" alt="chat" class="nav__item__Icon"/>
+                    <div class="nav__item__text">聊天</div>
+                </div>
+                <div class="nav__item" style="position: absolute; bottom: 30px;">
+                    <img src="/images/signOut.png" alt="signOut" class="nav__item__Icon" />
+                    <div class="nav__item__text">登出</div>
+                </div>
+            </div>
+            <div style="flex: 1;background-color: #e6f7ff;">
+                <div class="gridContainer">
+                    <div class="contact">
+                        <div class="contact__title">聊天室</div>
+                        <input type="email" placeholder="信箱" class="contact__input" style="margin-top: 5px;"/>
+
+                        <div class="contact__list"></div>
+                    </div>
+                    <div style="height: 100vh;background-color: #ffffff;">
+                        <div class="chatRoom">
+                            <div class="chatRoom__header">
+                                <div class="tittle">
+                                    <img src="/images/surprised.png" alt="chat room logo"/>
+                                    <div class="tittle__text">乂煞氣の小甫乂 (loby84625)</div>
+                                </div>
+                                <div style="position: relative; padding: 25px 0px;">
+                                    <div class="TaskBar">
+                                        <img src="/images/phoneIcon.jpg" alt="phone icon" style="width: 70px;height: 70px;">
+                                        <img src="/images/imageIcon.jpg" alt="phone icon" style="margin-left: 10px;width: 70px;height: 70px;">
+                                    </div>
+                                    <div style="padding: 5px;">
+                                        <span class="status"> </span>
+                                        <span>乂煞氣の小甫乂</span><span> - </span><span style="color: blue;"> 莫忘初衷，盡心盡力</span>
+                                    </div>
+                                    <img src="/images/starry_sky1.jpg" alt="head shot" class="headShot">
+                                </div>
+                            </div>
+
+                            <div class="chatRoom__middle">
+                                <div class="messageBox">
+                                    
+                                </div>
+                            </div>
+
+                            <div class="chatRoom__footer">
+                                <div class="emojiTaskBar">
+                                    <div style="font-size: 32px;">😎</div>
+                                    <img src="/images/doorbell.png" alt="doorbell" style="width: 43px;height: 43px;margin-left: 30px;">
+                                </div>
+                                <div style="padding: 0px 10px 40px 10px;">
+                                    <div style="background-color: #ffffff; height: 80px; width: 100%;display: flex;">
+                                        <textarea class="sendMessageArea"></textarea>
+                                        <button style="width: 100px;">送出</button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="scripts/chatRoom.js"></script>
+</body>
+</html>

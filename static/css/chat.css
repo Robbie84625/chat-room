@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Noto Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+}
+hr{
+    border: none;             
+    height: 1px;              
+    background-color: #d3d3d3; 
+    margin: 0;                
+    padding: 0;               
+}
+
+body{
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+}
+.nav{
+    width: 110px;
+    position: relative;
+}
+.nav__item{
+    margin: 30px auto 0px auto; width: 90px; padding: 0px 10px;
+}
+.nav__item__Icon{
+    width:90px;
+}
+.nav__item__text{
+    text-align: center;
+    font-weight: 700;
+}
+
+@media (max-width: 1200px) {
+    .nav{
+        width: 70px;
+    }
+    .nav__item{
+        width: 50px;
+    }
+    .nav__item__Icon{
+        width:50px;
+    }
+}
+
+
+.gridContainer{
+    display: grid;
+    grid-template-columns: 450px 1fr;
+}
+
+
+.contact{
+    padding: 30px 0px;
+    height: calc(100vh-60px);
+}
+
+
+@media (max-width: 600px) {
+    .gridContainer{
+        grid-template-columns: 1fr;
+    }
+}
+
+.contact__title{
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    margin-left: 30px;
+    height: 38px;
+}
+
+.contact__input{
+    border-radius: 50rem; 
+    padding: 10px 20px;   
+    border: 1px solid #ccc; 
+    max-width: 390px;width: calc(100% - 60px);
+    font-size: 20px;
+    margin-left: 10px;
+    height: 46px;
+}
+
+.chatRoom{
+    background-color: #D3D3D3;
+    height: 100%;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.chatRoom__header{
+    height: 224px;
+}
+
+.contact__list{
+    margin: 30px 10px 0px 10px;
+}
+
+.tittle{
+    height: 38px;
+    background-color: blueviolet;
+    padding: 5px 10px;
+    display: flex;
+}
+
+.tittle__text{
+    margin-left:10px;
+    font-size: 28px;
+    color: white;
+}
+
+.TaskBar{
+    padding:10px;
+    display: flex;
+}
+
+.status{
+    border-radius: 50%;
+    background-color: green;
+    margin: 5px;
+    width: 16px;height: 16px;
+    display: inline-block;
+    vertical-align: middle; 
+}
+.headShot{
+    position: absolute;
+    right: 10px;top:5px;
+    height: 166px;
+}
+
+.chatRoom__middle{
+    flex: 1;
+    display: flex;
+    align-items: center; 
+    flex-direction: column;
+}
+
+.messageBox{
+    margin: 0px auto 0px auto;
+    background-color: #ffffff;
+    height: 100%;width: calc(100% - 20px);
+}
+
+.emojiTaskBar{
+    padding: 20px 10px;
+    display: flex;
+}
+.sendMessageArea{
+    font-size: 20px;
+    flex: 1;
+    resize: none; 
+}
