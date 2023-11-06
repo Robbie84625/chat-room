@@ -43,7 +43,7 @@ router.post("/login", async (req, res) => {
 
 async function getUserData(email, password) {
     const data = await LoginDB.getMemberData(email, password);
-    return {userId: data[0].memberId,name: data[0].name,nickName: data[0].nickName};
+    return {userId: data[0].memberId,email: data[0].email,nickName: data[0].nickName,name: data[0].name,headshot:data[0].headshot,moodText:data[0].moodText};
 }
 
 

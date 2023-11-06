@@ -4,6 +4,8 @@ const path = require('path');
 
 const signUpRouter = require('./api/signUp_api').router;
 const loginRouter = require('./api/login_api').router;
+const chatRoomRouter = require('./api/chatRoom_api').router;
+const friendRouter = require('./api/friend_api').router;
 
 const app = express();
 const port = 4000;
@@ -26,9 +28,11 @@ app.get("/chatRoom", (req, res) => {
 
 app.use('/', signUpRouter);
 app.use('/', loginRouter);
+app.use('/', chatRoomRouter);
+app.use('/', friendRouter);
 app.set('view engine', 'ejs');
 
 app.listen(port, () => {
-    console.log(`http://127.0.1:${port}`);
+    console.log(`http://127.0.0.1:${port}`);
 });
 
