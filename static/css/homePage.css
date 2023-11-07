@@ -7,7 +7,7 @@ body {
 }
 
 .custom-background {
-    background-image: url('/images/starry_sky.jpg');
+    background-image: url('/images/starry_sky.JPG');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
