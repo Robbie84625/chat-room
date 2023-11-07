@@ -58,18 +58,3 @@ document.getElementById("exitUserMsg").addEventListener("click", () => {
 });
 
 
-document.getElementById("opneAddFriend").addEventListener("click", () => {
-    let addFriendContaine=document.getElementById("addFriendContaine");
-    let mask=document.getElementById("mask");
-
-    addFriendContaine.style.display="block";
-    mask.style.display="block";
-});
-
-document.getElementById("exitAddFriendContainer").addEventListener("click", () => {
-    let addFriendContaine=document.getElementById("addFriendContaine");
-    let mask=document.getElementById("mask");
-
-    addFriendContaine.style.display="none";
-    mask.style.display="none";
-});

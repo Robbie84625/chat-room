@@ -1,0 +1,37 @@
+.bg-green{
+    background-color: #00C300;
+}
+
+.bg-white{
+    background-color: #ffffff;
+}
+
+.bg-gray{
+    background-color:#D3D3D3;
+}
+
+.bg-blue{
+    background-color: #ADD8E6;
+}
+.bg-purple{
+    background-color: blueviolet;
+}
+.text-white{
+    color: white;
+}
+
+.bg-black{
+    background: #000000;
+}
+
+.text-darkPurple{
+    color:   #4B0082;
+}
+
+.text-gray{
+    color:gray;
+}
+
+.text-16{
+    font-size: 16px;
+}

@@ -4,43 +4,34 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
     <meta charset="utf-8"/>
     <title>星旅交流站</title>
+    <link rel="stylesheet" type="text/css" href="/css/colors.css"/>
     <link rel="stylesheet" type="text/css" href="/css/chat.css"/>
 </head>
 <body>
-    <div class="mask" id="mask">
+    <div class="mask bg-black" id="mask">
         
     </div>
 
-    <div class="addFriendContainer" id="addFriendContaine">
-        <div class="header">
+    <div class="addFriendContainer bg-gray" id="addFriendContainer">
+        <div class="header bg-blue">
             <img src="/images/exit.png" style="position: absolute; width: 48px; height: 48px; top: 0; right: 0;" id="exitAddFriendContainer"/>
             夥伴邀請
         </div>
         <div style="width: 320px;height: 30px; display: flex; margin: 20px auto; background-color: #ffffff;border-radius: 5px;">
             <img src="/images/select.png" alt="search icon" style="height: 30px;"/>
-            <input type="email" style="border: 0px;flex: 1;" class="no-outline" id="inviteFriendEmail"/>
+            <input type="email" placeholder="夥伴代號 (信箱)" style="border: 0px;flex: 1;" class="no-outline" id="inviteFriendEmail"/>
         </div>
         
         <div style="margin: 0px auto;width: 160px;">
-            <button style="width: 100%;font-size: 16px;background-color: #00C300;border-radius: 5px;padding: 5px;" id="sendInvite-btn">發送邀請</button>
+            <button style="width: 100%;font-size: 16px;background-color: #00C300;border-radius: 5px;padding: 5px;" id="findFriend-btn">搜尋夥伴</button>
         </div>
-        <div style="background-color: #ffffff;height: 369px;margin-top: 20px;  padding: 30px 10px;">
-            <div id="selectFriendExist">
-                <div style="width: 160px;height: 160px;margin: 0px auto;">
-                    <img src="/images/head-shot-default.png" style="width: 160px; height: 160px;" id="newFriendHeadShot"/>
-                </div>
-                    <div style="width: 160px;margin: 20px auto 0px auto; text-align: center;" id="newFriendNickName">
-                </div>
-                <div style="display: grid;  grid-template-columns: 1fr 1fr;margin: 30px auto 0px auto; width: 200px;grid-gap: 30px;">
-                    <button style="width:100%;font-size: 16px;background-color: #00C300;padding: 5px;">確認</button>
-                    <button style="width:100%;font-size: 16px;background-color: #ffffff;padding: 5px;">取消</button>
-                </div>
-            </div>
+        <div class="selectFriendContainer bg-white">
+            
         </div>
         
     </div>
 
-    <div class="userMsg" id="userMsg">
+    <div class="userMsg bg-white" id="userMsg">
         <div class="header">
             <img src="/images/exit.png" style="position: absolute; width: 48px; height: 48px; top: 0; right: 0;" id="exitUserMsg"/>
             個人檔案
@@ -118,11 +109,11 @@
                         <div class="contact__list"></div>
                     </div>
                     <div style="height: 100vh;background-color: #ffffff;">
-                        <div class="chatRoom">
+                        <div class="chatRoom bg-gray">
                             <div class="chatRoom__header">
-                                <div class="tittle">
+                                <div class="tittle bg-purple">
                                     <img src="/images/surprised.png" alt="chat room logo"/>
-                                    <div class="tittle__text"><span>小跑豬</span> (<span>runingPig</span>)</div>
+                                    <div class="tittle__text text-white"><span>小跑豬</span> (<span>runingPig</span>)</div>
                                 </div>
                                 <div style="position: relative; padding: 25px 0px;">
                                     <div class="TaskBar">
@@ -138,7 +129,7 @@
                             </div>
 
                             <div class="chatRoom__middle">
-                                <div class="messageBox">
+                                <div class="messageBox bg-white">
                                     
                                 </div>
                             </div>
