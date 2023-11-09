@@ -1,0 +1,51 @@
+.addFriendContainer__header{
+    height: 38px;
+    font-weight: 700;
+    padding: 5px 10px;
+    text-align: center;
+    font-size: 28px;
+    position: relative;
+}
+
+.addFriendContainer{
+    position: absolute;
+    left: 520px;
+    top: 0px; 
+    width: 350px; 
+    height: 600px; 
+    z-index: 3; 
+    border-radius: 15px;
+    overflow: hidden;
+    display: none;
+}
+
+.selectFriendContainer{
+    height: 369px;
+    margin-top: 20px;  
+    padding: 30px 10px;
+}
+
+.selectFriendContainer__noExist{
+    width: 160px;height: 160px;
+    margin: 0px auto;
+    text-align: center;
+    font-weight: 700;
+}
+
+.selectFriendExist__headShot{
+    display: block; 
+    width: 160px; height: 160px; 
+    margin: 0px auto;
+}
+
+.selectFriendExist__nickName, .selectFriendExist__status {
+    margin: 20px auto 0px auto; 
+    text-align: center;
+}
+
+.selectFriendExist__checkBar{
+    display: grid;  grid-template-columns: 1fr 1fr;margin: 30px auto 0px auto; width: 200px;grid-gap: 30px;
+}
+.selectFriendExist__checkBar__btn{
+    width:100%;font-size: 16px;padding: 5px;
+}

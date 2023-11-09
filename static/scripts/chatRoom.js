@@ -57,4 +57,10 @@ document.getElementById("exitUserMsg").addEventListener("click", () => {
     mask.style.display="none";
 });
 
+//登出
+document.getElementById('signOut-btn').addEventListener('click', function () {
+    localStorage.removeItem('token');
+    
+    window.location.reload();
+});
 

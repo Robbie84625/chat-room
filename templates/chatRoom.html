@@ -6,6 +6,7 @@
     <title>星旅交流站</title>
     <link rel="stylesheet" type="text/css" href="/css/colors.css"/>
     <link rel="stylesheet" type="text/css" href="/css/chat.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/friend.css"/>
 </head>
 <body>
     <div class="mask bg-black" id="mask">
@@ -13,7 +14,7 @@
     </div>
 
     <div class="addFriendContainer bg-gray" id="addFriendContainer">
-        <div class="header bg-blue">
+        <div class="addFriendContainer__header bg-blue">
             <img src="/images/exit.png" style="position: absolute; width: 48px; height: 48px; top: 0; right: 0;" id="exitAddFriendContainer"/>
             夥伴邀請
         </div>
@@ -69,38 +70,41 @@
     <div>
         <div style="display: flex; height: 100vh;">
             <div class="nav">
-                <div class="nav__item" id="openUserMsg">
+                <div class="nav__item nav-btn" id="openUserMsg">
                     <img src="/images/personalFile.png" alt="personal file" class="nav__item__Icon"/>
                     <div class="nav__item__text">個人檔案</div>
                 </div>
-                <div class="nav__item">
+                <div class="nav__item nav-btn" id ="openFriendList">
                     <img src="/images/friend.png" alt="friend" class="nav__item__Icon"/>
                     <div class="nav__item__text">好友</div>
                 </div>
-                <div class="nav__item">
+                <div class="nav__item nav-btn">
                     <img src="/images/group.png" alt="group" class="nav__item__Icon"/>
                     <div class="nav__item__text">群組</div>
                 </div>
-                <div class="nav__item">
+                <div class="nav__item nav-btn">
                     <img src="/images/chat_icon.png" alt="chat" class="nav__item__Icon"/>
                     <div class="nav__item__text">聊天</div>
                 </div>
-                <div class="nav__item">
+                <div class="nav__item nav-btn"  id="notice-btn"></div>>
                     <img src="/images/notice.png" alt="notice" class="nav__item__Icon"/>
                     <div class="nav__item__text">通知</div>
                 </div>
-                <div class="nav__item" style="position: absolute; bottom: 30px;">
+                <div class="nav__item nav-btn" style="position: absolute; bottom: 30px;" id="signOut-btn">
                     <img src="/images/signOut.png" alt="signOut" class="nav__item__Icon" />
-                    <div class="nav__item__text">登出</div>
+                    <div class="nav__item__text" >登出</div>
                 </div>
             </div>
             <div style="flex: 1;background-color: #e6f7ff;">
                 <div class="gridContainer">
-                    <div class="contact">
+                    <div style="display: none;">
+
+                    </div>
+                    <div class="contact" id="friendContainer">
                         <div style="display: flex;justify-content: space-between;">
                             <div class="contact__title">夥伴列表</div>
                             <div>
-                                <img src="/images/add-user.png" alt="add friend" style="height: 38px;margin-right: 10px;" id="opneAddFriend"/>
+                                <img src="/images/add-user.png" alt="add friend" style="height: 38px;margin-right: 10px;" id="openAddFriend"/>
                             </div>
                         </div>
                         
@@ -108,6 +112,20 @@
 
                         <div class="contact__list"></div>
                     </div>
+
+                    <!-- <div class="contact" id="groupContainer">
+                        <div style="display: flex;justify-content: space-between;">
+                            <div class="contact__title">夥伴列表</div>
+                            <div>
+                                <img src="/images/add-user.png" alt="add friend" style="height: 38px;margin-right: 10px;" id="openAddFriend"/>
+                            </div>
+                        </div>
+                        
+                        <input type="email" placeholder="搜尋夥伴" class="contact__input" style="margin-top: 5px;"/>
+
+                        <div class="contact__list"></div>
+                    </div> -->
+
                     <div style="height: 100vh;background-color: #ffffff;">
                         <div class="chatRoom bg-gray">
                             <div class="chatRoom__header">
@@ -152,6 +170,7 @@
             </div>
         </div>
     </div>
+    <script src="socket.io/socket.io.js"></script>
     <script type="text/javascript" src="scripts/chatRoom.js"></script>
     <script type="text/javascript" src="scripts/changeUserMsg.js"></script>
     <script type="text/javascript" src="scripts/friend.js"></script>

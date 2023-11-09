@@ -23,6 +23,7 @@ async function loginData_to_database() {
         if (data.status === "success") {
             loginRemind.innerHTML = '<span style="color: #00FF00">✅登陸成功</span>';
             localStorage.setItem('token', data.token);
+
             window.location.href = "/chatRoom";
         } else {
             loginRemind.innerHTML = "⚠登入失敗:帳號或密碼錯誤";

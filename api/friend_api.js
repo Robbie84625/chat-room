@@ -43,4 +43,29 @@ router.post("/selectNewFriend", async (req, res) => {
 
 });
 
+router.post("/sendFriendInvitation", async (req, res) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decodedToken = jwt.verify(token, secretKey);
+
+        let friendId=req.body.data.memberId
+        let requesterID=decodedToken.userId
+        let invitationStatus = "PendingConfirmation";
+
+        const checkFriendInvitation= await FriendDB.checkFriendInvitation(requesterID,friendId,"PendingConfirmation");
+            if (checkFriendInvitation) {
+                await FriendDB.createFriendInvitation(requesterID, friendId,invitationStatus);
+                return res.status(200).json({ status: "success", message: "加入好友成功"});
+            } 
+            else {
+                return res.status(400).json({ status: "error", message: "已經發送過好友邀請" });
+            }
+
+    } catch (err) {
+        res.status(500).send({ status: "error", message: "內部伺服器出現錯誤" });
+    }
+
+});
+
+
 module.exports = { router};

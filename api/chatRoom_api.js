@@ -24,7 +24,7 @@ function authenticateToken(req, res, next) {
 // 使用中間件來保護特定路由
 router.use(authenticateToken);
 
-// 新的路由定义，使用router.get
+// 新的路由定義，使用router.get
 router.get('/getMemberData', (req, res) => {
     const userData = req.userData;
 

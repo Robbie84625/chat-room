@@ -35,3 +35,16 @@
 .text-16{
     font-size: 16px;
 }
+
+.no-outline:focus {
+    outline: none;
+}
+
+.nav-btn{
+    cursor: pointer;
+    transition: background-color 0.3s ease;     
+}
+.nav-btn:hover {
+    background: linear-gradient(45deg, #cccccc, #dddddd);
+    color: purple;
+}
