@@ -35,6 +35,7 @@ async function selectNewFriendData_in_database() {
             },
         });
         const data = await response.json();
+        console.log(data)
         if (data.message == "無此用戶") {
             let containerDiv = document.querySelector('.selectFriendContainer.bg-white');
             containerDiv.innerHTML = `<div class="selectFriendContainer__noExist text-darkPurple">
@@ -49,7 +50,7 @@ async function selectNewFriendData_in_database() {
             containerDiv.innerHTML = htmlContent;
         }
         else if (data.newFriendData && data.newFriendData.length > 0) {
-            let newFriendData = data.newFriendData[0];
+            let newFriendData = data.newFriendData;
             let htmlContent = createSelectFriendElement(newFriendData,data.message);
 
             let containerDiv = document.querySelector('.selectFriendContainer.bg-white');

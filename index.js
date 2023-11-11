@@ -7,6 +7,7 @@ const signUpRouter = require('./api/signUp_api').router;
 const loginRouter = require('./api/login_api').router;
 const chatRoomRouter = require('./api/chatRoom_api').router;
 const friendRouter = require('./api/friend_api').router;
+const noticeRouter = require('./api/notice_api').router;
 
 const app = express();
 const port = 4000;
@@ -33,6 +34,7 @@ app.use('/', signUpRouter);
 app.use('/', loginRouter);
 app.use('/', chatRoomRouter);
 app.use('/', friendRouter);
+app.use('/', noticeRouter);
 app.set('view engine', 'ejs');
 
 server.listen(port, () => {

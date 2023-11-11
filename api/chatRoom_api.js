@@ -1,7 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 const jwt = require('jsonwebtoken');
-const bodyParser = require('body-parser');
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -24,14 +22,12 @@ function authenticateToken(req, res, next) {
 // 使用中間件來保護特定路由
 router.use(authenticateToken);
 
-// 新的路由定義，使用router.get
+
 router.get('/getMemberData', (req, res) => {
     const userData = req.userData;
 
     res.send(JSON.stringify(userData));
 });
 
-// 添加其他路由定义
-// 请确保在这里添加您的其他API端点路由
 
 module.exports = {router};

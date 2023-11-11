@@ -21,7 +21,7 @@
 }
 
 .bg-black{
-    background: #000000;
+    background: rgba(0, 0, 0, 0.75);
 }
 
 .text-darkPurple{

@@ -7,7 +7,6 @@ token = localStorage.getItem('token');
 async function fetchMemberData() {
     try {
         if (!token) {
-            console.error('未找到令牌');
             return;
         }
         const headers = {
@@ -41,7 +40,8 @@ async function fetchMemberData() {
 // 執行取得會員資訊函數
 fetchMemberData();
 
-document.getElementById("openUserMsg").addEventListener("click", () => {
+//open個人檔案頁面
+document.getElementById("userMsg-btn").addEventListener("click", () => {
     let userMsg=document.getElementById("userMsg");
     let mask=document.getElementById("mask");
 
@@ -49,6 +49,7 @@ document.getElementById("openUserMsg").addEventListener("click", () => {
     mask.style.display="block";
 });
 
+//exit個人頁面
 document.getElementById("exitUserMsg").addEventListener("click", () => {
     let userMsg=document.getElementById("userMsg");
     let mask=document.getElementById("mask");
@@ -64,3 +65,18 @@ document.getElementById('signOut-btn').addEventListener('click', function () {
     window.location.reload();
 });
 
+//更改按鈕顏色
+function changeButtonColor(button) {
+    let computedStyle = window.getComputedStyle(button);
+    let backgroundColor = computedStyle.backgroundColor;
+
+    if (backgroundColor === "rgb(147, 112, 219)") { 
+        button.style.backgroundColor = "#ffffff"; 
+    }
+}
+
+//
+function clearContainer(){
+    let contactContainer = document.querySelector('.contact__container');
+    contactContainer.innerHTML='';
+}

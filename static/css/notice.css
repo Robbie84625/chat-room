@@ -1,0 +1,62 @@
+.contact__loading{
+    position: absolute;
+    top: 50%;left: 50%;transform: translate(-50%, -50%);
+    width: 100px;height: 100px;
+    display: none;
+}
+
+
+#noticePage{
+    display: none;
+}
+
+.contact__container__item{
+    display: grid;grid-template-columns:106px 1fr;
+    padding: 5px;
+    height: 106px;
+    border-bottom: 1px solid #ccc;
+    margin-top: 20px;
+}
+
+.contact__container__item__img{
+    width: 96px; height: 96px;
+}
+
+.contact__container__notice{
+    margin-left: 10px;
+    font-size: 16px;
+    height: 38px;
+    width: 334px;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}
+
+.contact__container__time{
+    margin-left: 10px;font-size: 16px;color:blue; font-weight: 700;
+}
+
+.cancelInvitation{
+    display: block; 
+    padding: 5px; margin:5px 0px 5px 10px; 
+    background-color:rgba(0, 255, 0, 0.7);
+}
+
+.receiveCheckBar{
+    width: 152px;
+    display: grid; grid-template-columns: 66px 86px;grid-gap: 10px;
+    margin:5px 0px 5px 10px; 
+}
+.receiveCheckBar__accept{
+    display: block;
+    padding: 5px;
+    background-color:rgba(0, 255, 0, 0.7);
+}
+.receiveCheckBar__reject{
+    display: block;
+    padding: 5px;
+    background-color:rgba(200, 200, 200, 0.7);
+}
