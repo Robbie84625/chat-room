@@ -35,7 +35,6 @@ async function selectNewFriendData_in_database() {
             },
         });
         const data = await response.json();
-        console.log(data)
         if (data.message == "無此用戶") {
             let containerDiv = document.querySelector('.selectFriendContainer.bg-white');
             containerDiv.innerHTML = `<div class="selectFriendContainer__noExist text-darkPurple">
@@ -43,20 +42,20 @@ async function selectNewFriendData_in_database() {
             </div>`;
         }
         else if(data.status ==="error"){
-            let newFriendData = data.newFriendData[0];
-            let htmlContent = createSelectFriendElement(newFriendData,data.message);
+
+            let htmlContent = createSelectFriendElement(data.newFriendData,data.message);
 
             let containerDiv = document.querySelector('.selectFriendContainer.bg-white');
             containerDiv.innerHTML = htmlContent;
         }
-        else if (data.newFriendData && data.newFriendData.length > 0) {
-            let newFriendData = data.newFriendData;
-            let htmlContent = createSelectFriendElement(newFriendData,data.message);
+        
+        else{
+            let htmlContent = createSelectFriendElement(data.newFriendData,data.message);
 
             let containerDiv = document.querySelector('.selectFriendContainer.bg-white');
             containerDiv.innerHTML = htmlContent;
             
-            return newFriendData;
+            return data.newFriendData;
         }
     } catch (error) {
         console.error("Error during login:", error);
@@ -67,6 +66,7 @@ async function selectNewFriendData_in_database() {
 //搜尋夥伴
 document.getElementById("findFriend-btn").addEventListener("click",  async () =>  {
     let  newFriendData = await selectNewFriendData_in_database();
+    console.log(newFriendData)
     controlSelectFriendBtn(newFriendData);
 });
 
@@ -148,6 +148,7 @@ function clearSelectFriendContainer() {
 }
 
 async function sendFriendInvitation(newFriendData){
+    console.log(newFriendData)
     const response = await fetch("/sendFriendInvitation", {
         method: "POST",
         body: JSON.stringify({

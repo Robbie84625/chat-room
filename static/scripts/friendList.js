@@ -19,13 +19,13 @@ function change_friendBtn_bg(){
     let friendBtn = document.getElementById("friend-btn")
     friendBtn.style.backgroundColor = "#9370db";
 
-    let userMsgBtn=document.getElementById("userMsg-btn")
+    let userInfoBtn=document.getElementById("userInfo-btn")
     let noticeBtn=document.getElementById("notice-btn")
     let groupBtn=document.getElementById("group-btn")
     let chatBtn=document.getElementById("chat-btn")
 
 
-    changeButtonColor(userMsgBtn);
+    changeButtonColor(userInfoBtn);
     changeButtonColor(noticeBtn);
     changeButtonColor(groupBtn);
     changeButtonColor(chatBtn);

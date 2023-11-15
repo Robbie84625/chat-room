@@ -1,7 +1,9 @@
 document.getElementById("notice-btn").addEventListener("click", () => {
     change_noticeBtn_bg();
     clearContainer();
-    fetch_firstPage_notice();
+    let contact__loading = document.getElementById("noticeLoading");
+    contact__loading.style.display="block";
+    fetch_firstPage_notice(contact__loading);
 });
 
 function noticeAppear(){
@@ -14,21 +16,26 @@ function noticeAppear(){
     noticePage.style.display="block";
 }
 
-async function getInviteData_from_database(page,contact__loading){
-    let token = localStorage.getItem('token');
-    if (!token) {
-        return;
+async function getInviteData_from_database(noticePageStatus,contact__loading = null){
+    if (contact__loading) {
+        contact__loading.style.display = "block";
     }
 
+    if (noticePageStatus.isLoading|| noticePageStatus.lastPage || !localStorage.getItem('token')) {
+        return ;
+    }
+    noticePageStatus.isLoading = true;
     try {
-        const response = await fetch(`/getInviteData?page=${page}`, {
+        const response = await fetch(`/getInviteData?page=${noticePageStatus.page}`, {
             headers: {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Authorization': `Bearer ${token}`
             },
         });
         const data = await response.json();
-        contact__loading.style.display="none";
+        if (contact__loading){
+            contact__loading.style.display="none";
+        }  
 
         if(data['data'].sendInvite){
             createSendInvite(data['data'].sendInvite)
@@ -36,11 +43,18 @@ async function getInviteData_from_database(page,contact__loading){
         if(data['data'].receiveInvite){
             createReceiveInvite(data['data'].receiveInvite)
         }
-    
+
+        if (data.nextPage!=null){
+            noticePageStatus.page=data.nextPage
+        }
+        if (data.nextPage===null){
+            noticePageStatus.lastPage=true
+        }
+        noticePageStatus.isLoading = false;
     } catch (error) {
         console.error("Error during login:", error);
+        noticePageStatus.isLoading = false;
     }
-    
 }
 
 function createSendInvite(data){
@@ -72,13 +86,13 @@ function change_noticeBtn_bg(){
     let noticeBtn = document.getElementById("notice-btn")
     noticeBtn.style.backgroundColor = "#9370db";
 
-    let userMsgBtn=document.getElementById("userMsg-btn")
+    let userInfoBtn=document.getElementById("userInfo-btn")
     let friendBtn=document.getElementById("friend-btn")
     let groupBtn=document.getElementById("group-btn")
     let chatBtn=document.getElementById("chat-btn")
 
 
-    changeButtonColor(userMsgBtn);
+    changeButtonColor(userInfoBtn);
     changeButtonColor(friendBtn);
     changeButtonColor(groupBtn);
     changeButtonColor(chatBtn);
@@ -116,7 +130,7 @@ async function cancel_invitation(invitationId){
         if (data.status === "success") {
             const noticeContainer = document.getElementById('noticeContainer');
             noticeContainer.innerHTML='';
-            fetch_firstPage_notice();
+            fetch_firstPage_notice(contact__loading);
         }else {
             alert("取消失敗")
         }
@@ -125,13 +139,12 @@ async function cancel_invitation(invitationId){
     }
 }
 
-function fetch_firstPage_notice(){
-    let contact__loading = document.querySelector(".contact__loading");
-    contact__loading.style.display="block";
-
-    let page=0;
+function fetch_firstPage_notice(contact__loading){
+    noticePageStatus.page=0;
+    noticePageStatus.lastPage=false;
+    
     noticeAppear();
-    getInviteData_from_database(page,contact__loading);
+    getInviteData_from_database(noticePageStatus,contact__loading);
 }
 
 function handlePendingConfirmation(detail, noticeContainer){
@@ -243,3 +256,23 @@ async function build_friendship(requesterID,friendID,invitationId){
         console.error("Error during login:", error);
     }
 }
+
+
+
+let noticePageStatus = {
+    page: 1,
+    lastPage: false,
+    isLoading:false
+};
+
+const noticePageDiv = document.getElementById('noticePage');
+
+noticePageDiv.addEventListener('scroll', async function() {
+    // 检查是否滚动到底部
+    if (noticePageDiv.scrollTop + noticePageDiv.clientHeight >= noticePageDiv.scrollHeight) {
+        // 已经滚动到底部，加载下一页
+        await getInviteData_from_database(noticePageStatus, null);
+    }
+}); 
+
+

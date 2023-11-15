@@ -1,0 +1,145 @@
+@import url(https://fonts.googleapis.com/earlyaccess/cwtexyen.css);
+.userInfo {
+    position: absolute;
+    left: 120px;
+    top: 10px; 
+    width: 350px; height: 600px; 
+    z-index: 3; 
+    border-radius: 15px;
+    overflow: hidden;
+    display: none;
+    
+}
+
+.userInfo__header{
+    height: 38px;
+    font-weight: 700;font-size: 28px;
+    padding: 5px 10px;
+    text-align: center;
+    position: relative;
+    background-color: #ADD8E6;
+}
+
+.userInfo__header__exitIcon{
+    position: absolute; 
+    width: 48px; height: 48px; 
+    top: 0; right: 0;
+}
+
+.userInfo__headShotContainer{
+    width: 123px;height: 164px;
+    margin: 20px auto;position: relative;
+}
+
+.userInfo__headShotContainer__img{
+    width:100%;height: 100%;
+    object-fit:cover;
+    transition: filter 0.3s;
+}
+
+.userInfo__headShotContainer:hover {
+    filter: brightness(50%);
+}
+
+.userInfo__headShotContainer__editIcon{
+    position: absolute; bottom: 0; right: 0; width: 30px; height: 30px;
+    transition: filter 0.3s;
+}
+
+.checkChangHeadShot-btn{
+    position: absolute; bottom: 0; right: 0; height: 30px;
+    background-color: aqua;
+}
+
+.userInfo__nickNameContainer__nickName{
+    text-align: center;
+    font-weight: 700;
+    font-size: 24px;
+    color: #000080; 
+    text-shadow: 1px 1px 2px #add8e6;
+    font-family: 'Noto Sans TC', sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.userInfo__container__name{
+    text-align: center;
+    font-weight: 700;
+    font-size: 24px;
+    color: #888888;
+    font-family: 'Noto Sans TC', sans-serif;
+}
+
+.userInfo__moodTextContainer {
+    width: 90%;
+    display: flex; 
+    margin: 30px auto; 
+    justify-content: center;
+}
+
+.userInfo__moodTextContainer__moodText{
+    max-width: calc(100% - 30px);
+    min-width: 72px;
+    color: #4B0082;
+    text-shadow: 1px 1px 2px #e6e6fa;
+    text-align: center;
+    font-weight: 700;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 16px;
+    text-align: left;
+    min-height: 72px;
+    overflow: hidden;             
+    display: -webkit-box;         
+    -webkit-box-orient: vertical; 
+    -webkit-line-clamp: 3;
+    text-overflow: ellipsis; 
+    white-space: normal;          
+}
+.userInfo__moodTextContainer__editIcon{
+    width: 20px;height: 20px;
+    margin-left:10px;
+    transition: filter 0.3s;
+}
+
+.userInfo__moodTextContainer__editIcon:hover{
+    background-color: #add8e6
+}
+
+.userInfo__nickNameContainer{
+    width: 90%;
+    display: flex; 
+    margin:0px auto; 
+    justify-content: center;
+}
+
+.userInfo__nickNameContainer__editIcon{
+    width: 20px;height: 20px;
+    margin: auto 0px auto 10px;
+    transition: filter 0.3s;
+}
+
+.userInfo__nickNameContainer__editIcon:hover{
+    background-color: #add8e6
+}
+.userInfo__updateIcon{
+    height: 70px;margin: 20px auto; display: block;
+}
+
+.userInfo__updateIcon:hover {
+    filter: brightness(80%);
+}
+
+.loading__userInfoStatus{
+    width: 30px;height: 30px;display: none;margin: 0px auto;
+}
+.userInfo__status{
+    color:#008000;          
+    text-shadow: 1px 1px 2px #90ee90; 
+    text-align: center;
+    font-weight: 700;
+    font-family: 'Noto Sans TC', sans-serif;
+}
+.hidden {
+    display: none;
+}

@@ -20,7 +20,7 @@ class LoginDB {
     }
 
     async getMemberData(email, password) {
-        queryMySQL = 'SELECT * FROM member WHERE email = ? AND password = ?;';
+        queryMySQL = 'SELECT memberId,email,name FROM member WHERE email = ? AND password = ?;';
         values = [email, password];
         try {
             const queryResults = await pool.query(queryMySQL, values);

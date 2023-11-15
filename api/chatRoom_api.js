@@ -23,11 +23,6 @@ function authenticateToken(req, res, next) {
 router.use(authenticateToken);
 
 
-router.get('/getMemberData', (req, res) => {
-    const userData = req.userData;
-
-    res.send(JSON.stringify(userData));
-});
 
 
 module.exports = {router};

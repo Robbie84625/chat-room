@@ -27,15 +27,15 @@ router.post("/selectNewFriend", async (req, res) => {
         }
         
         else if (newFriendData[0].memberId === decodedToken.userId) {
-            return res.status(400).json({ status: "error", message: "這不是您自己嗎?" , newFriendData: newFriendData });
+            return res.status(400).json({ status: "error", message: "這不是您自己嗎?" , newFriendData: newFriendData[0]});
         } 
         else {
             const checkFriendship = await FriendDB.checkFriendship(decodedToken.userId, newFriendData[0].memberId);
             if (checkFriendship) {
-                return res.status(400).json({ status: "error", message: "你們已經是好友!" , newFriendData: newFriendData});
+                return res.status(400).json({ status: "error", message: "你們已經是好友!" , newFriendData: newFriendData[0]});
             } 
             else {
-                return res.status(200).json({ status: "success", message: "請問是你要找的夥伴嗎?", newFriendData: newFriendData });
+                return res.status(200).json({ status: "success", message: "請問是你要找的夥伴嗎?", newFriendData: newFriendData[0]});
             }
         }
 
@@ -71,6 +71,7 @@ router.post("/sendFriendInvitation", async (req, res) => {
 router.post("/buildFriendship", async (req, res) => {
     try {
         const { requesterID, friendID, invitationId } = req.body;
+        console.log(requesterID, friendID, invitationId )
         await FriendDB.insertFriendData(requesterID, friendID, invitationId);
         return res.status(200).json({ status: "success", message: "成功加入好友"});
 

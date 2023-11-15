@@ -19,7 +19,8 @@
 }
 
 .contact__container__item__img{
-    width: 96px; height: 96px;
+    width: 72px; height: 96px;
+    object-fit: cover;
 }
 
 .contact__container__notice{

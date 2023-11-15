@@ -74,7 +74,7 @@ class FriendDB {
             WHERE fi.friendID = ? OR fi.requesterID = ?
             ORDER BY fi.createdTime DESC LIMIT ?, ?;
         `;
-        values = [userId, userId ,page*10,11];
+        values = [userId, userId ,page*7,8];
         try {
             const queryResults = await pool.query(queryMySQL, values);
             results = queryResults[0];

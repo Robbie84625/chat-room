@@ -1,13 +1,12 @@
 const router = require('express').Router();
 
 const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
 
 
 let FriendDB = require("../models/friendDB").FriendDB;
 let NoticeDB = require("../models/noticeDB").NoticeDB;
 
-const secretKey = process.env.jwt_secrect_key;
+
 router.use(bodyParser.json());
 
 FriendDB = new FriendDB();
@@ -25,7 +24,7 @@ router.get('/getInviteData', async (req, res) => {
     let nextPage=0;
 
 
-    if (friendshipStatusData.length < 11) {
+    if (friendshipStatusData.length < 7) {
         nextPage = null;
     } else {
         nextPage=pageNumber+1;
@@ -35,7 +34,7 @@ router.get('/getInviteData', async (req, res) => {
     let receiveInvite = [];
 
     
-    for (let index of friendshipStatusData){
+    for (let index of friendshipStatusData.slice(0, 7)){
         if(index.requesterID===userId){
             sendInvite.push(index);
         }
@@ -75,5 +74,7 @@ router.post("/cancelInvitation", async (req, res) => {
         res.status(500).send({ status: "error", message: "內部伺服器出現錯誤" });
     }
 });
+
+
 
 module.exports = {router};
