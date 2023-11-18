@@ -48,3 +48,17 @@
     background: linear-gradient(45deg, #cccccc, #dddddd);
     color: purple;
 }
+
+.bg-lightPurple{
+    background-color: #E6E6FA;
+}
+
+.chatRoom__phone{
+    width: 70px;height: 70px;
+}
+.chatRoom__img{
+    margin-left: 10px;width: 70px;height: 70px;
+}
+.chatRoom__phone,.chatRoom__img:hover{
+    filter: contrast(120%);
+}

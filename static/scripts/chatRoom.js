@@ -22,8 +22,3 @@ function changeButtonColor(button) {
     }
 }
 
-//
-function clearContainer(){
-    let contactContainer = document.querySelector('.contact__container');
-    contactContainer.innerHTML='';
-}

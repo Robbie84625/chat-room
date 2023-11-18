@@ -6,7 +6,8 @@ const socketServer = require('./socket_server');
 const signUpRouter = require('./api/signUp_api').router;
 const loginRouter = require('./api/login_api').router;
 const chatRoomRouter = require('./api/chatRoom_api').router;
-const friendRouter = require('./api/friend_api').router;
+const addFriendRouter = require('./api/addFriend_api').router;
+const friendListRouter = require('./api/friendList_api').router;
 const noticeRouter = require('./api/notice_api').router;
 const userInfoRouter = require('./api/userInfo_api.js').router;
 
@@ -34,9 +35,10 @@ app.get("/", (req, res) => {
 app.use('/', signUpRouter);
 app.use('/', loginRouter);
 app.use('/', chatRoomRouter);
-app.use('/', friendRouter);
+app.use('/', addFriendRouter);
 app.use('/', noticeRouter);
 app.use('/', userInfoRouter);
+app.use('/', friendListRouter);
 app.set('view engine', 'ejs');
 
 server.listen(port, () => {

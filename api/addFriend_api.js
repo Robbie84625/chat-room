@@ -71,7 +71,6 @@ router.post("/sendFriendInvitation", async (req, res) => {
 router.post("/buildFriendship", async (req, res) => {
     try {
         const { requesterID, friendID, invitationId } = req.body;
-        console.log(requesterID, friendID, invitationId )
         await FriendDB.insertFriendData(requesterID, friendID, invitationId);
         return res.status(200).json({ status: "success", message: "成功加入好友"});
 

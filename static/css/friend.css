@@ -34,8 +34,9 @@
 
 .selectFriendExist__headShot{
     display: block; 
-    width: 160px; height: 160px; 
+    width: 120px; height: 160px; 
     margin: 0px auto;
+    object-fit: cover;
 }
 
 .selectFriendExist__nickName, .selectFriendExist__status {
@@ -48,4 +49,78 @@
 }
 .selectFriendExist__checkBar__btn{
     width:100%;font-size: 16px;padding: 5px;
+}
+
+.friendList__item{
+    padding: 10px;display: grid;grid-template-columns:79.5px 1fr;gap: 10px; height: 106px;border-bottom: 1px solid #ccc;
+}
+.friendList__item__headShot{
+    width: 79.5px; height: 106px;
+    object-fit: cover;
+}
+
+.friendList__item__Nickname{
+    font-size: 24px;width: 323.5px;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    font-weight:700;font-size: 24px;color:#8A2BE2
+}
+.friendList__item__moodText{
+    font-size: 14px;font-weight: 700;color: gray;line-height: 21px;
+    margin-top: 6px;width: 323.5px;
+    overflow: hidden;text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    -webkit-box-orient: vertical;
+    white-space: normal
+}
+.noFriend{
+    font-weight: 700;color: blueviolet;
+    margin-top: 30px;margin-left: 30px;
+    display: none;
+}
+.friendList__item:hover{
+    background-color: #E6E6FA; 
+}
+
+.chatRoom__statusBar{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+    width: calc(100% - 160px);
+}
+.chatRoom__statusBar__status{
+    border-radius: 50%;
+    background-color: green;
+    margin: 5px;
+    width: 16px;height: 16px;
+    display: inline-block;
+    vertical-align: middle; 
+}
+.chatRoom__statusBar__moodText{
+    flex: 1; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; 
+    line-height: 1.5em; 
+    color:blue;
+    font-size: 18px;
+}
+.chatRoom__statusBar__nickName{
+    font-size: 18px;
+    line-height: 1.5em; 
+}
+
+.headShot{
+    position: absolute;
+    right: 10px;top:5px;
+    height: 166px;width: 124px;
+    object-fit: cover;
+}
+#friendList{
+    height: calc(100vh - 171px);
+    overflow-y: auto;
 }

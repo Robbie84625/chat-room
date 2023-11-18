@@ -90,7 +90,9 @@ class FriendDB {
                 INSERT INTO friend_ship(requesterID, friendID) VALUES(?, ?);
             `;
             const updateQueryMySQL = `
-                UPDATE friend_invitations SET invitationStatus = 'Confirmed' WHERE id = ?;
+                UPDATE friend_invitations 
+                SET invitationStatus = 'Confirmed', createdTime = NOW() 
+                WHERE id = ?;
             `;
             await pool.query(insertQueryMySQL, [requesterID, friendID]);
             await pool.query(insertQueryMySQL, [friendID, requesterID]);
@@ -100,6 +102,43 @@ class FriendDB {
         }
     }
 
+    async findFriendship(userId,page){
+        const queryMySQL = `
+            SELECT f.friendshipID, f.createdTime,m.nickName,m.headshot,m.moodText,m.email
+            FROM member AS m
+            JOIN friend_ship AS f ON m.memberID = f.friendID
+            WHERE f.requesterID = ? 
+            ORDER BY f.createdTime DESC
+            LIMIT ?, ?;
+        `;
+        values = [userId,page*7,8];
+        try {
+            const queryResults = await pool.query(queryMySQL, values);
+            result = queryResults[0]
+        } catch (error) {
+            console.log(error.message);
+        }
+        return result;
+    }
+
+    async findFriendship_By_KeyWord(userId,keyword,page){
+        const queryMySQL = `
+            SELECT f.friendshipID, f.createdTime,m.nickName,m.headshot,m.moodText,m.email
+            FROM member AS m
+            JOIN friend_ship AS f ON m.memberID = f.friendID
+            WHERE f.requesterID = ? AND m.nickName LIKE CONCAT('%', ?, '%')
+            ORDER BY f.createdTime DESC
+            LIMIT ?, ?;
+        `;
+        values = [userId,keyword,page*7,8];
+        try {
+            const queryResults = await pool.query(queryMySQL, values);
+            result = queryResults[0]
+        } catch (error) {
+            console.log(error.message);
+        }
+        return result;
+    }
 }
 
 

@@ -1,6 +1,6 @@
 document.getElementById("notice-btn").addEventListener("click", () => {
     change_noticeBtn_bg();
-    clearContainer();
+    document.getElementById('noticeContainer').innerHTML='';
     let contact__loading = document.getElementById("noticeLoading");
     contact__loading.style.display="block";
     fetch_firstPage_notice(contact__loading);
@@ -17,6 +17,9 @@ function noticeAppear(){
 }
 
 async function getInviteData_from_database(noticePageStatus,contact__loading = null){
+    let noInvite=document.getElementById('noInvite');
+    noInvite.style.display='none';
+
     if (contact__loading) {
         contact__loading.style.display = "block";
     }
@@ -33,24 +36,31 @@ async function getInviteData_from_database(noticePageStatus,contact__loading = n
             },
         });
         const data = await response.json();
-        if (contact__loading){
-            contact__loading.style.display="none";
-        }  
 
-        if(data['data'].sendInvite){
-            createSendInvite(data['data'].sendInvite)
-        }
-        if(data['data'].receiveInvite){
-            createReceiveInvite(data['data'].receiveInvite)
-        }
-
-        if (data.nextPage!=null){
-            noticePageStatus.page=data.nextPage
-        }
-        if (data.nextPage===null){
-            noticePageStatus.lastPage=true
-        }
         noticePageStatus.isLoading = false;
+
+        if (contact__loading) {
+            contact__loading.style.display = "none";
+        }
+        
+        const { sendInvite, receiveInvite } = data['data'];
+        if (sendInvite) {
+            createSendInvite(sendInvite);
+            noInvite.style.display = 'none';
+        }
+        if (receiveInvite) {
+            createReceiveInvite(receiveInvite);
+            noInvite.style.display = 'none';
+        }
+        if (data.nextPage !== null) {
+            noticePageStatus.page = data.nextPage;
+        } else {
+            noticePageStatus.lastPage = true;
+        }
+        if ((sendInvite && sendInvite.length < 1) && (receiveInvite && receiveInvite.length < 1) && noticePageStatus.lastPage === false) {
+            noInvite.style.display = 'block';
+        }
+        
     } catch (error) {
         console.error("Error during login:", error);
         noticePageStatus.isLoading = false;
@@ -112,6 +122,12 @@ function date_transformation(systemTime){
 
     return date;
 }
+
+let noticePageStatus = {
+    page: 1,
+    lastPage: false,
+    isLoading:false
+};
 
 async function cancel_invitation(invitationId){
     try {
@@ -246,7 +262,7 @@ async function build_friendship(requesterID,friendID,invitationId){
         const data = await response.json();
 
         if (data.status === "success") {
-            let noticeContainer = document.querySelector('.contact__container');
+            let noticeContainer = document.getElementById('noticeContainer')
             noticeContainer.innerHTML='';
             fetch_firstPage_notice();
         }else {
@@ -257,20 +273,10 @@ async function build_friendship(requesterID,friendID,invitationId){
     }
 }
 
-
-
-let noticePageStatus = {
-    page: 1,
-    lastPage: false,
-    isLoading:false
-};
-
-const noticePageDiv = document.getElementById('noticePage');
+const noticePageDiv = document.getElementById('noticeContainer');
 
 noticePageDiv.addEventListener('scroll', async function() {
-    // 检查是否滚动到底部
     if (noticePageDiv.scrollTop + noticePageDiv.clientHeight >= noticePageDiv.scrollHeight) {
-        // 已经滚动到底部，加载下一页
         await getInviteData_from_database(noticePageStatus, null);
     }
 }); 

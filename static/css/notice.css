@@ -10,6 +10,11 @@
     display: none;
 }
 
+#noticeContainer{
+    height: calc(100vh - 98px);
+    overflow-y: auto;
+}
+
 .contact__container__item{
     display: grid;grid-template-columns:106px 1fr;
     padding: 5px;
@@ -27,7 +32,6 @@
     margin-left: 10px;
     font-size: 16px;
     height: 38px;
-    width: 334px;
     overflow: hidden; 
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -60,4 +64,10 @@
     display: block;
     padding: 5px;
     background-color:rgba(200, 200, 200, 0.7);
+}
+
+.noInvite{
+    font-weight: 700;color: blueviolet;
+    margin-top: 30px;margin-left: 30px;
+    display: none;
 }

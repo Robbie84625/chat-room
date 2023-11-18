@@ -66,7 +66,6 @@ async function selectNewFriendData_in_database() {
 //搜尋夥伴
 document.getElementById("findFriend-btn").addEventListener("click",  async () =>  {
     let  newFriendData = await selectNewFriendData_in_database();
-    console.log(newFriendData)
     controlSelectFriendBtn(newFriendData);
 });
 
@@ -148,7 +147,6 @@ function clearSelectFriendContainer() {
 }
 
 async function sendFriendInvitation(newFriendData){
-    console.log(newFriendData)
     const response = await fetch("/sendFriendInvitation", {
         method: "POST",
         body: JSON.stringify({

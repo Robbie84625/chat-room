@@ -79,6 +79,7 @@
                     <div class="contact" id="noticePage">
                         <img src="/images/ufo.gif" alt="notice loading" class="contact__loading" id="noticeLoading"/>
                         <div class="contact__title" style="margin-bottom: 20px;">銀河快訊</div>
+                        <div class="noInvite" id="noInvite">目前沒有通知</div>
                         <div class="contact__container" id="noticeContainer">
                             
                         </div>
@@ -88,12 +89,16 @@
                         <div style="display: flex;justify-content: space-between;">
                             <div class="contact__title">夥伴列表</div>
                             <div>
-                                <img src="/images/add-user.png" alt="add friend" style="height: 38px;margin-right: 10px;" id="openAddFriend"/>
+                                <img src="/images/add-user.png" alt="add friend" style="height: 38px;margin:30px 10px 0px 0px" id="openAddFriend"/>
                             </div>
                         </div>
-                        <input type="text" placeholder="搜尋夥伴" class="contact__input" style="margin-top: 5px;"/>
-                        <img src="/images/ufo.gif" alt="notice loading" class="contact__loading"/>
-                        <div class="contact__container" id="friendContainer">
+                        <input type="text" placeholder="搜尋夥伴" class="contact__input" style="margin-top: 5px;" id="friendInput"/>
+                        <img src="/images/ufo.gif" alt="friend list loading" class="contact__loading" id="friendListLoading"/>
+                        <div class="noFriend" id="noFriend">目前還沒有好友喔!請至
+                            <span><img src="/images/add-user.png" alt="all friend icon" style="width:20px;height: 20px;vertical-align: middle;"></span>
+                            加入好友
+                        </div>
+                        <div class="contact__container" id="friendList">
                             
                         </div>
                     </div>
@@ -112,20 +117,23 @@
                     </div>
 
                     <div style="height: 100vh;background-color: #ffffff;">
-                        <div class="chatRoom bg-gray">
+                        <div class="chatRoom bg-lightPurple">
                             <div class="chatRoom__header">
                                 <div class="tittle bg-purple">
                                     <img src="/images/surprised.png" alt="chat room logo"/>
-                                    <div class="tittle__text text-white"><span>小跑豬</span> (<span>runingPig</span>)</div>
+                                    <div class="tittle__text text-white">
+                                        <span id="friendNickName">friend's nickname</span> (<span id="friendEmailPrefix">Friend's email prefix</span>)</div>
                                 </div>
-                                <div style="position: relative; padding: 25px 0px;">
+                                <div style="position: relative; padding: 25px 0px 0px 0px;">
                                     <div class="TaskBar">
-                                        <img src="/images/phoneIcon.jpg" alt="phone icon" style="width: 70px;height: 70px;">
-                                        <img src="/images/imageIcon.jpg" alt="upload image icon" style="margin-left: 10px;width: 70px;height: 70px;">
+                                        <img src="/images/phoneIcon.jpg" alt="phone icon" class="chatRoom__phone">
+                                        <img src="/images/imageIcon.jpg" alt="upload image icon" class="chatRoom__img">
                                     </div>
-                                    <div style="padding: 5px;">
-                                        <span class="status"> </span>
-                                        <span>小跑豬</span><span> - </span><span style="color: blue;">小跑豬來了</span>
+                                    <div class="chatRoom__statusBar">
+                                        <div class="chatRoom__statusBar__status"></div>
+                                        <div class="chatRoom__statusBar__nickName" id="friend_nickName">friend's nickname</div>
+                                        <div style="margin: 0px 5px;">-</div>
+                                        <div class="chatRoom__statusBar__moodText" id="friendMoodText">心情小語</div>
                                     </div>
                                     <img src="/images/head-shot-default.png" alt="head shot" class="headShot" id="headShot">
                                 </div>
@@ -155,6 +163,7 @@
             </div>
         </div>
     </div>
+    <script src="socket.io/socket.io.js"></script>
     <script type="text/javascript" src="scripts/chatRoom.js"></script>
     <script type="text/javascript" src="scripts/addFriend.js"></script>
     <script type="text/javascript" src="scripts/notice.js"></script>

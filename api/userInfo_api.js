@@ -42,7 +42,7 @@ const upload = multer({
     storage: multer.memoryStorage(), 
     fileFilter: function (req,file, cb) {
       // 驗證檔案類型，只接受 jpg 和 png 格式
-    if (!file.originalname.match(/\.(jpg|jpeg|png|PNG)$/)) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
         return cb(new Error('Only jpg and png formats are allowed!'), false);
     }
     cb(null, true);
