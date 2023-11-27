@@ -1,11 +1,34 @@
 const socketIO = require('socket.io');
+const uuid = require('uuid');
 
-function setupSocketServer(server) {
+let ChatDB = require("./models/chatDB").ChatDB;
+ChatDB = new ChatDB();
+
+const setupSocketServer = (server) => {
     const io = socketIO(server);
 
     io.on('connection', (socket) => {
-        console.log('A user connected');
-        console.log("已經連接完成"); // 添加這行代碼
+        socket.on('joinRoom', (roomId) => {
+            socket.join(roomId);
+        });
+    
+        socket.on('sendMessage', async(data, roomId) => {
+            await ChatDB.insertPersonalMessage(data.requesterID, data.recipientID, data.message);
+            io.in(roomId).emit('receiveMessage', data)
+        });
+        //socket io設定
+        socket.on('updateReadStatus', async (data) => {
+            const { roomId, friendId,userId} = data;
+            if (roomId && friendId) {
+                socket.to(roomId).emit('readStatusUpdated', roomId);
+                await ChatDB.updateReadStatus(userId,friendId);
+            } else {
+                console.error('Invalid data received in updateReadStatus:', data);
+            }
+        });
+
+        
     });
 }
+
 module.exports = setupSocketServer;

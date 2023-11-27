@@ -1,0 +1,188 @@
+.createGroup-btn{
+    background: linear-gradient(90deg, black,gold);
+    border-radius: 15px;
+    color: white;
+    padding: 10px 20px;
+    width: 400px;
+    font-size: 20px;font-weight: 700;
+    cursor: pointer;
+    margin: 20px auto 20px auto;
+    display: block;
+}
+.createGroup-btn:hover {
+    background: linear-gradient(90deg, gold, black);
+}
+.createGroup{
+    position: absolute;
+    left: 520px;
+    top: 0px; 
+    width: 600px; 
+    height: 800px; 
+    z-index: 3; 
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: #ffffff;
+    display: none;
+}
+
+
+.createGroupLoading{
+    position: absolute;
+    left: 520px;
+    top: 0px;
+    width: 600px; 
+    height: 800px;
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 15px; 
+    overflow: hidden; 
+    z-index: 4; 
+    display: none;
+}
+
+.createGroup__header{
+    height: 38px;
+    font-weight: 700;font-size: 28px;
+    padding: 5px 10px;
+    text-align: center;
+    position: relative;
+    background-color: #ADD8E6;
+}
+
+.createGroup__header__exitIcon{
+    position: absolute; 
+    width: 48px; height: 48px; 
+    top: 0; right: 0;
+}
+.createGroup__middle{
+    width: 123px;height: 164px;
+    margin: 20px auto;position: relative;
+}
+.createGroup__middle__img{
+    width:100%;height: 100%;
+    object-fit:cover;
+    transition: filter 0.3s;
+}
+.createGroup__middle__editIcon{
+    position: absolute; bottom: 0; right: 0; width: 30px; height: 30px;
+    transition: filter 0.3s;
+}
+.createGroup__middle__img:hover {
+    filter: brightness(50%);
+}
+
+.groupNameContainer{
+    display: flex;
+    margin: 0px 10px 0px 10px;
+    font-weight: 700;
+    font-size: 24px;
+    color: #000080;
+    text-shadow: 1px 1px 2px #add8e6;
+    font-family: 'Noto Sans TC', sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.groupNameContainer__groupName{
+    margin-left: 5px; flex-grow: 1;border-bottom: 1px solid gray;
+}
+
+.inviteAndJoin{
+    height: 400px;
+    margin: 20px 10px 20px 10px;
+    display: grid;grid-template-columns: 1fr 1fr;
+    border: 1px solid black;
+}
+
+.inviteMember{
+    height: 100%;background-color: #ffffff;border-right: 1px solid black;
+}
+
+.inviteMember__title{
+    padding: 10px;text-align: center;font-weight: 700;border-bottom: 1px solid black;
+}
+
+
+.inviteMember__searchContainer{
+    display: flex; background-color: #999;padding: 5px;
+}
+
+.inviteMember__searchContainer__input{
+    width: calc(100% - 30px);margin-left: 10px;background-color: #999;border: none;color: #ffffff;font-size: 20px;font-weight: 700;
+}
+
+.inviteMember__container{
+    height: 316px;overflow-y: auto;
+}
+
+.inviteMember__container__item{
+    padding: 5px 10px;display: flex;border-bottom: 1px solid black;
+}
+
+.inviteMember__container__item__headShot{
+    width: 60px;height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.inviteMember__container__item__nickName{
+    margin:auto 0px auto 10px;font-weight: 700;
+}
+
+.join__title{
+    padding: 10px;text-align: center;font-weight: 700;border-bottom: 1px solid black;
+}
+
+.joinMember{
+    height: 100%;
+}
+
+.sureCreateGroup-btn{
+    background: linear-gradient(90deg, black,gold);
+    border-radius: 15px;
+    color: white;
+    padding: 10px 20px;
+    width: 400px;
+    font-size: 20px;font-weight: 700;
+    cursor: pointer;
+    margin: 20px auto 20px auto;
+    display: block;
+}
+.sureCreateGroup-btn:hover {
+    background: linear-gradient(90deg, gold, black);
+}
+.join__container{
+    height: 316px;overflow-y: auto;
+}
+
+.groupList__item{
+    padding: 10px;display: grid;grid-template-columns:79.5px 1fr;gap: 10px; height: 106px;border-bottom: 1px solid #ccc;
+}
+
+.groupList__item__avatarContainer{
+    background-color: #ffffff;
+    width: 79.5px; height: 106px;
+    border-radius: 50%;
+}
+
+
+.groupList__item__avatar{
+    width: 100%;height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.groupList__item__Nickname{
+    font-size: 24px;width: 323.5px;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    font-weight:700;font-size: 24px;color:#8A2BE2;
+    margin:auto 10px;
+}
+
+.groupList__item:hover{
+    background-color: #E6E6FA; 
+}

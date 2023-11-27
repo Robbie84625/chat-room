@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="/css/friend.css"/>
     <link rel="stylesheet" type="text/css" href="/css/notice.css"/>
     <link rel="stylesheet" type="text/css" href="/css/userInfo.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/group.css"/>
 </head>
 <body>
     <div class="mask bg-black" id="mask">
@@ -45,6 +46,47 @@
         </div>
     </div>
 
+    <div class="createGroup" id="createGroupPage">
+        <div class="createGroup__header">
+            <img src="/images/exit.png" class="createGroup__header__exitIcon" id="exitCreateGroup"/>
+            建立公會
+        </div>
+        <div class="createGroup__middle">
+            <img src="/images/group.png" alt="head shot" class="createGroup__middle__img"  id="groupHeadShot"/>
+            <input type="file" name="file" id="groupHeadShotInput" style="display:none">
+            <img src="images/image-editing.png" alt="image editing" class="createGroup__middle__editIcon" />
+        </div>
+        <div class="groupNameContainer">
+            <div>公會名稱 : </div>
+            <div class="groupNameContainer__groupName"contenteditable="true"></div>
+            <div style="color: red;">*必填</div>
+        </div>
+        <div class="inviteAndJoin">
+            <div class="inviteMember">
+                <div class="inviteMember__title">邀請夥伴</div>
+                <div class="inviteMember__searchContainer">
+                    <img src="/images/select.png" alt="search invite friend" style="width: 20px;height: 20px;"/>
+                    <input type="text" class="inviteMember__searchContainer__input"/>
+                </div>
+                <div class="inviteMember__container"> 
+                    
+                </div>
+            </div>
+            <div class="joinMember">
+                <div class="join__title">受邀夥伴</div>
+                <div class="join__container"> 
+                    
+                </div>    
+            </div>
+        </div>
+        <button class="sureCreateGroup-btn">確定創建</button>
+    </div>
+    <div class="createGroupLoading" id="createGroupLoading">
+        <div style="position: relative;height: 100%;">
+            <img src="images/loading.gif" style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);"/>
+        </div>
+    </div>
+
     
     <div>
         <div style="display: flex; height: 100vh;">
@@ -59,7 +101,7 @@
                 </div>
                 <div class="nav__item nav-btn" id="group-btn">
                     <img src="/images/group.png" alt="group" class="nav__item__Icon"/>
-                    <div class="nav__item__text">群組</div>
+                    <div class="nav__item__text">公會</div>
                 </div>
                 <div class="nav__item nav-btn" id ="chat-btn">
                     <img src="/images/chat_icon.png" alt="chat" class="nav__item__Icon"/>
@@ -104,25 +146,27 @@
                     </div>
 
                     <div class="contact" id="groupContainer">
-                        <div style="display: flex;justify-content: space-between;">
-                            <div class="contact__title">夥伴列表</div>
-                            <div>
-                                <img src="/images/add-user.png" alt="add friend" style="height: 38px;margin-right: 10px;" id="openAddFriend"/>
-                            </div>
-                        </div>
+                            <div class="contact__title">公會列表</div>
                         
-                        <input type="email" placeholder="搜尋夥伴" class="contact__input" style="margin-top: 5px;"/>
+                        <input type="text" placeholder="搜尋公會" class="contact__input" style="margin-top: 5px;" id="groupInput"/>
+                        <button class="createGroup-btn">創建公會</button>
+                        <img src="/images/ufo.gif" alt="notice loading" class="contact__loading" id="groupListLoading" style="display: block;"/>
+                        <div class="contact__list" id="groupList">
 
-                        <div class="contact__list"></div>
+                        </div>
                     </div>
 
-                    <div style="height: 100vh;background-color: #ffffff;">
+                    
+                    
+
+                    <div style="height: 100vh;background-color: #ffffff;display: none;"id="friendChartRoom">
                         <div class="chatRoom bg-lightPurple">
                             <div class="chatRoom__header">
                                 <div class="tittle bg-purple">
-                                    <img src="/images/surprised.png" alt="chat room logo"/>
                                     <div class="tittle__text text-white">
-                                        <span id="friendNickName">friend's nickname</span> (<span id="friendEmailPrefix">Friend's email prefix</span>)</div>
+                                        <span id="onlineStatusEmoji"></span>
+                                        <span id="receiverNickName">friend's nickname</span> (<span id="receiverEmailPrefix">Friend's email prefix</span>)
+                                    </div>
                                 </div>
                                 <div style="position: relative; padding: 25px 0px 0px 0px;">
                                     <div class="TaskBar">
@@ -130,19 +174,16 @@
                                         <img src="/images/imageIcon.jpg" alt="upload image icon" class="chatRoom__img">
                                     </div>
                                     <div class="chatRoom__statusBar">
-                                        <div class="chatRoom__statusBar__status"></div>
-                                        <div class="chatRoom__statusBar__nickName" id="friend_nickName">friend's nickname</div>
+                                        <div class="chatRoom__statusBar__status" id="onlineStatus"></div>
+                                        <div class="chatRoom__statusBar__nickName" id="receiver_nickName">friend's nickname</div>
                                         <div style="margin: 0px 5px;">-</div>
-                                        <div class="chatRoom__statusBar__moodText" id="friendMoodText">心情小語</div>
+                                        <div class="chatRoom__statusBar__moodText" id="receiverMoodText">心情小語</div>
                                     </div>
                                     <img src="/images/head-shot-default.png" alt="head shot" class="headShot" id="headShot">
                                 </div>
                             </div>
 
-                            <div class="chatRoom__middle">
-                                <div class="messageBox bg-white">
-                                    
-                                </div>
+                            <div class="chatRoom__middle bg-white" id="messageBox">
                             </div>
 
                             <div class="chatRoom__footer">
@@ -152,18 +193,21 @@
                                 </div>
                                 <div style="padding: 0px 10px 40px 10px;">
                                     <div style="background-color: #ffffff; height: 80px; width: 100%;display: flex;">
-                                        <textarea class="sendMessageArea"></textarea>
-                                        <button style="width: 100px;">送出</button>
+                                        <textarea class="sendMessageArea no-outline" id="messageInput"></textarea>
+                                        <button style="width: 100px;"id="sendMessage-btn">送出</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
     <script src="socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="scripts/groupList.js"></script>
+    <script type="text/javascript" src="scripts/addGroup.js"></script>
     <script type="text/javascript" src="scripts/chatRoom.js"></script>
     <script type="text/javascript" src="scripts/addFriend.js"></script>
     <script type="text/javascript" src="scripts/notice.js"></script>

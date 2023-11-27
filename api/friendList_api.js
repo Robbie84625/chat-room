@@ -23,53 +23,31 @@ router.get('/getFriendData', async (req, res) => {
     let nextPage=0;
     if(!keyword){
         const friendshipData = await FriendDB.findFriendship(decodedToken.userId,pageNumber);
-        if (friendshipData.length < 7) {
+        if (friendshipData.length < 11) {
             nextPage = null;
         } else {
             nextPage=pageNumber+1;
         }
         let friendshipDataResult = {
             "nextPage": nextPage,
-            "data": friendshipData.slice(0, 7)
+            "data": friendshipData.slice(0, 10)
         };
         res.send(JSON.stringify(friendshipDataResult));
     }
     if (keyword){
         const friendshipData = await FriendDB.findFriendship_By_KeyWord(decodedToken.userId,keyword,pageNumber);
-        if (friendshipData.length < 7) {
+        if (friendshipData.length < 11) {
             nextPage = null;
         } else {
             nextPage=pageNumber+1;
         }
         let friendshipDataResult = {
             "nextPage": nextPage,
-            "data": friendshipData.slice(0, 7)
+            "data": friendshipData.slice(0, 10)
         };
         res.send(JSON.stringify(friendshipDataResult));
     }
     
-    
-
-    // let sendInvite = [];
-    // let receiveInvite = [];
-
-    
-    // for (let index of friendshipStatusData.slice(0, 7)){
-    //     if(index.requesterID===userId){
-    //         sendInvite.push(index);
-    //     }
-    //     else if(index.friendID===userId){
-    //         receiveInvite.push(index);
-    //     }
-    // }
-    // let friendshipStatusResult = {
-    //     "nextPage": nextPage,
-    //     "data": {
-    //         "sendInvite": sendInvite,
-    //         "receiveInvite": receiveInvite
-    //     }
-    // };
-    // res.send(JSON.stringify(friendshipStatusResult));
 });
 
 module.exports = { router};

@@ -30,6 +30,30 @@ class LoginDB {
         }
         return result;
     }
+
+    async updateToOnline(memberId) {
+        queryMySQL = 'UPDATE member SET onlineStatus = ? WHERE memberId = ?;';
+        let onlineStatus='online';
+        values = [onlineStatus, memberId];
+        try {
+            await pool.query(queryMySQL, values);
+        } catch (error) {
+            console.log(error.message);
+        }
+        return result;
+    }
+
+    async updateToOffline(memberId) {
+        queryMySQL = 'UPDATE member SET onlineStatus = ? WHERE memberId = ?;';
+        let onlineStatus='offline';
+        values = [onlineStatus, memberId];
+        try {
+            await pool.query(queryMySQL, values);
+            return result;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 

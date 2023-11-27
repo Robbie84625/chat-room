@@ -24,7 +24,7 @@ router.get('/getInviteData', async (req, res) => {
     let nextPage=0;
 
 
-    if (friendshipStatusData.length < 7) {
+    if (friendshipStatusData.length < 11) {
         nextPage = null;
     } else {
         nextPage=pageNumber+1;
@@ -34,7 +34,7 @@ router.get('/getInviteData', async (req, res) => {
     let receiveInvite = [];
 
     
-    for (let index of friendshipStatusData.slice(0, 7)){
+    for (let index of friendshipStatusData.slice(0, 10)){
         if(index.requesterID===userId){
             sendInvite.push(index);
         }

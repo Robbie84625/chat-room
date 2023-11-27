@@ -87,6 +87,7 @@
 .chatRoom__statusBar{
     display: flex;
     flex-wrap: wrap;
+    height: 57px;
     padding: 5px;
     width: calc(100% - 160px);
 }
@@ -100,6 +101,7 @@
 }
 .chatRoom__statusBar__moodText{
     flex: 1; 
+    font-weight: 700;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
@@ -112,6 +114,7 @@
 .chatRoom__statusBar__nickName{
     font-size: 18px;
     line-height: 1.5em; 
+    font-weight: 700;
 }
 
 .headShot{

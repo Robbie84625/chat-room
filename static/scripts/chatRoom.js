@@ -1,14 +1,27 @@
-if (!localStorage.getItem('token')) {
-    window.location.href = "/";
+let checkToken =localStorage.getItem('token');
+
+async function checkTokenExist() {
+    let token = localStorage.getItem('token');
+    if (!token) {
+        try {
+            await changeOnlineStatus();
+            window.location.href = "/";
+        } catch (error) {
+            console.error('發生錯誤:', error);
+        }
+    }
 }
-
-token = localStorage.getItem('token');
-
+async function checkTokenPeriodically() {
+    setInterval(async function () {
+        await checkTokenExist();
+    }, 1000);
+}
+checkTokenPeriodically(); 
 
 //登出
-document.getElementById('signOut-btn').addEventListener('click', function () {
+document.getElementById('signOut-btn').addEventListener('click',async function () {
+    await changeOnlineStatus();
     localStorage.removeItem('token');
-    
     window.location.reload();
 });
 
@@ -22,3 +35,24 @@ function changeButtonColor(button) {
     }
 }
 
+const socket = io('http://127.0.0.1:4000');
+
+async function changeOnlineStatus(){
+    try {
+        const response = await fetch('/signOut', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${checkToken}`,
+                'Content-Type': 'application/json',
+            },
+        });
+    
+        if (response.ok) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (error) {
+        console.error('發生錯誤:', error);
+    }
+}

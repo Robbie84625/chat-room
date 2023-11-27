@@ -74,7 +74,7 @@ class FriendDB {
             WHERE fi.friendID = ? OR fi.requesterID = ?
             ORDER BY fi.createdTime DESC LIMIT ?, ?;
         `;
-        values = [userId, userId ,page*7,8];
+        values = [userId, userId ,page*10,11];
         try {
             const queryResults = await pool.query(queryMySQL, values);
             results = queryResults[0];
@@ -104,14 +104,23 @@ class FriendDB {
 
     async findFriendship(userId,page){
         const queryMySQL = `
-            SELECT f.friendshipID, f.createdTime,m.nickName,m.headshot,m.moodText,m.email
-            FROM member AS m
-            JOIN friend_ship AS f ON m.memberID = f.friendID
-            WHERE f.requesterID = ? 
-            ORDER BY f.createdTime DESC
+            SELECT 
+                f.friendshipID, f.createdTime,f.requesterID,f.friendId,
+                requester.nickName AS requesterNickName,
+                friend.nickName AS friendNickName,friend.headshot,friend.moodText,friend.email,friend.onlineStatus
+            FROM  
+                friend_ship AS f
+            JOIN 
+                member AS requester ON f.requesterID = requester.memberID
+            JOIN 
+                member AS friend ON f.friendID = friend.memberID
+            WHERE
+                f.requesterID = ?
+            ORDER BY 
+                f.createdTime DESC
             LIMIT ?, ?;
         `;
-        values = [userId,page*7,8];
+        values = [userId,page*10,11];
         try {
             const queryResults = await pool.query(queryMySQL, values);
             result = queryResults[0]
@@ -123,14 +132,23 @@ class FriendDB {
 
     async findFriendship_By_KeyWord(userId,keyword,page){
         const queryMySQL = `
-            SELECT f.friendshipID, f.createdTime,m.nickName,m.headshot,m.moodText,m.email
-            FROM member AS m
-            JOIN friend_ship AS f ON m.memberID = f.friendID
-            WHERE f.requesterID = ? AND m.nickName LIKE CONCAT('%', ?, '%')
-            ORDER BY f.createdTime DESC
+            SELECT 
+                f.friendshipID, f.createdTime,f.requesterID,f.friendId,
+                requester.nickName AS requesterNickName,
+                friend.nickName AS friendNickName,friend.headshot,friend.moodText,friend.email,friend.onlineStatus
+            FROM 
+                friend_ship AS f
+            JOIN 
+                member AS requester ON f.requesterID = requester.memberID
+            JOIN 
+                member AS friend ON f.friendID = friend.memberID
+            WHERE 
+                f.requesterID = ? AND friend.nickName LIKE CONCAT('%', ?, '%')
+            ORDER BY 
+                f.createdTime DESC
             LIMIT ?, ?;
         `;
-        values = [userId,keyword,page*7,8];
+        values = [userId,keyword,page*10,11];
         try {
             const queryResults = await pool.query(queryMySQL, values);
             result = queryResults[0]

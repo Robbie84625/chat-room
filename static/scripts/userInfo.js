@@ -63,7 +63,6 @@ function control_userInfo(){
     
     document.getElementById("headShotInput").addEventListener("change", function() {
         const headShotFile = this.files[0];
-    
         if (headShotFile) {        
             const reader = new FileReader();
     
@@ -76,6 +75,7 @@ function control_userInfo(){
             reader.readAsDataURL(headShotFile); // 讀取選擇的圖片
         }
     });
+    
     let moodTextDiv = document.getElementById('myMoodText');
     let nickNameDiv = document.getElementById('myNickName');
     let editNickNameIcon = document.getElementById('userInfo__nickNameContainer__editIcon');
@@ -149,7 +149,6 @@ function setupMoodTextEditing(moodTextDiv, editIcon) {
     else if(moodTextDiv.id==='myNickName'){
         userInfo_oldValue.oldNickName=moodTextDiv.textContent; 
     }
-    // userInfo_oldValue.oldNickName=moodTextDiv.textContent;
     
     // 設置編輯圖標的點擊事件
     editIcon.addEventListener('click', function() {
