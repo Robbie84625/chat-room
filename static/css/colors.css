@@ -57,7 +57,7 @@
     width: 70px;height: 70px;
 }
 .chatRoom__img{
-    margin-left: 10px;width: 70px;height: 70px;
+    width: 70px;height: 70px;
 }
 .chatRoom__phone:hover, .chatRoom__img:hover {
     filter: contrast(80%);

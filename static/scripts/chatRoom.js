@@ -35,7 +35,30 @@ function changeButtonColor(button) {
     }
 }
 
-const socket = io('http://127.0.0.1:4000');
+const socket = io('https://chat-room.robbieliu.com');
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const token = localStorage.getItem('token'); 
+
+    if (token) {
+        try {
+            const response = await fetch('/userOnlineStatus', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+            if (data.status === 'success') {
+                socket.emit('login', { memberId: data.memberId });
+            } 
+        } catch (error) {
+            console.error('Error verifying token:', error);
+        }
+    }
+});
 
 async function changeOnlineStatus(){
     try {
@@ -46,9 +69,9 @@ async function changeOnlineStatus(){
                 'Content-Type': 'application/json',
             },
         });
-    
+        const data = await response.json();
         if (response.ok) {
-            return true;
+            socket.emit('preDisconnect', { memberId: data.userId });
         } else {
             return false;
         }

@@ -51,6 +51,66 @@ class ChatDB {
         let values = [recipientID, requesterID];
         await pool.query(queryMySQL, values);
     }
+
+    async insertGroupMessage(guildID,userId,message,groupMember){
+        const insertQueryMySQL = `
+            INSERT INTO guild_messages(guildID, senderID,content) VALUES(?, ?, ?);
+        `;
+
+        const batchInsertQuery = `
+            INSERT INTO guild_messagesReadStatus(messageID, memberID, isRead,guildID) VALUES ?;
+        `;
+        let values = [guildID,userId,message];
+        try {
+            const queryResults = await pool.query(insertQueryMySQL, values);
+            const messageID = queryResults[0].insertId;
+            const groupMembers = groupMember.map(memberID => [messageID, memberID, 0,guildID]);
+            await pool.query(batchInsertQuery, [groupMembers]);
+
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    async updateGroupReadStatus(guildID,userID){
+        let queryMySQL = `
+        UPDATE guild_messagesReadStatus
+            SET isRead = 1
+        WHERE 
+            guildID = ? AND memberID = ? AND isRead = 0 
+        ORDER BY messageID DESC
+            LIMIT 100;
+    `;
+    let values = [guildID,userID];
+    await pool.query(queryMySQL, values);
+    }
+    
+    async groupHistoryMsg(guildID,page,timezone){
+        let queryMySQL = `
+        SELECT 
+            m.nickName AS senderNickName, 
+            g.content,
+            CONVERT_TZ(g.timestamp, '+00:00', ?) AS timestamp
+        FROM 
+            guild_messages g
+        INNER JOIN 
+            member m ON g.senderID = m.memberId
+        WHERE 
+            g.guildID = ?
+        ORDER BY 
+            timestamp DESC
+        LIMIT ?, ?;
+        `;
+        let values = [timezone,guildID,page*10,11];
+        try {
+            let queryResults = await pool.query(queryMySQL, values);
+            result = queryResults[0];
+        } catch (error) {
+            console.log(error.message);
+        }
+        return result;
+    }
+
 }
 
 module.exports = {

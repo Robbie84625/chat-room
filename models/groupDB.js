@@ -1,5 +1,5 @@
 const pool = require("../database_connect").pool;
-let values,result,queryMySQL;
+let values,value,result;
 
 class GroupDB {
 
@@ -51,9 +51,7 @@ class GroupDB {
     async findGroup_By_KeyWord(userId,keyword,page){
         const queryMySQL = `
         SELECT 
-            G.guildID, 
-            G.guildName, 
-            G.guildAvatar
+            G.guildID, G.guildName, G.guildAvatar
         FROM  
             guild G
         INNER JOIN 
@@ -64,7 +62,7 @@ class GroupDB {
             GM.joinDate DESC
         LIMIT ?, ?;
         `;
-        values = [userId,keyword,page*10,11];
+        values = [keyword,userId,page*10,11];
         try {
             const queryResults = await pool.query(queryMySQL, values);
             result = queryResults[0]
@@ -73,7 +71,21 @@ class GroupDB {
         }
         return result;
     }
-
+    async getGroupMember(guildID){
+        const queryMySQL = `
+            SELECT guild_member.memberID,guild_member.isAdmin
+            FROM guild_member
+            WHERE guild_member.guildID = ?;
+        `;
+        value = [guildID];
+        try {
+            const queryResults = await pool.query(queryMySQL, value);
+            result = queryResults[0]
+        } catch (error) {
+            console.log(error.message);
+        }
+        return result;
+    }
 }
 
 module.exports = {

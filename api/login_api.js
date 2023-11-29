@@ -52,7 +52,7 @@ router.post('/signOut', async (req, res) => {
     try {
         const decodedToken = jwt.verify(token, secretKey);
         await LoginDB.updateToOffline(decodedToken.userId);
-        res.status(200).json({ message: '登出成功' });
+        res.status(200).json({ message: '登出成功' ,"userId":decodedToken.userId});
     } catch (error) {
         res.status(500).json({ message: '伺服器錯誤' });
     }

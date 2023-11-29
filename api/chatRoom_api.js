@@ -22,6 +22,12 @@ function authenticateToken(req, res, next) {
 // 使用中間件來保護特定路由
 router.use(authenticateToken);
 
+router.post('/userOnlineStatus', (req, res) => {
+    const token = req.headers.authorization.split(' ')[1];  // 獲取 token
+    const decodedToken = jwt.verify(token, secretKey);
+
+    res.json({ status: 'success', memberId: decodedToken.userId });
+});
 
 
 

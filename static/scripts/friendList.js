@@ -7,7 +7,7 @@ document.getElementById("friend-btn").addEventListener("click", () => {
     fetch_firstPage_friendList(friendListLoading);
 });
 
-document.getElementById('friendInput').addEventListener('input', function(event) {
+document.getElementById('friendInput').addEventListener('input', function() {
     let friendListLoading = document.getElementById("friendListLoading");
     friendListLoading.style.display="block";
     document.getElementById('friendList').innerHTML='';
@@ -110,7 +110,8 @@ function createFriendData(detail){
     friendListDiv.appendChild(friendItemDiv);
 
     friendItemDiv.addEventListener('click', function() {
-        document.getElementById('friendChartRoom').style.display='block';
+        document.getElementById('friendChatRoom').style.display='block';
+        document.getElementById('groupChatRoom').style.display='none';
         let onlineStatus=detail.onlineStatus;
         let emailPrefix=detail.email.split('@')[0];
         let friendNickName=detail.friendNickName;
@@ -131,8 +132,21 @@ function createFriendData(detail){
         room_manager.roomId=roomId;
         room_manager.data=detail;
         socket.emit('joinRoom', roomId);
+        socket.on('userOnline', (data) => {
+            if (data.memberId === user_info.friend_id) {
+                document.getElementById('onlineStatusEmoji').textContent = '😀';
+                document.getElementById('onlineStatus').style.backgroundColor = 'green';
+            }
+        });
+        socket.on('userOffline', (data) => {
+            if (data.memberId === user_info.friend_id) {
+                document.getElementById('onlineStatusEmoji').textContent = '😴';
+                document.getElementById('onlineStatus').style.backgroundColor = 'gray';
+            }
+        });
     });
 }
+
 document.getElementById('sendMessage-btn').addEventListener('click', function(){
     let requesterID=room_manager.data.requesterID;
     let recipientID= room_manager.data.friendId;
@@ -223,6 +237,7 @@ function sendMessage_to_friend(requesterID,recipientID,requesterNickName,friendN
     
     socket.emit('sendMessage', data, roomId);
 };
+
 socket.on('receiveMessage', (data) => {
     appendMessageToBox(data);
 });
@@ -268,12 +283,9 @@ function appendMessageToBox(messageData) {
     }
 
     messageBox.appendChild(messageItem);
-
-    messageBox.addEventListener('scroll', function () {
-        if (messageBox.scrollTop + messageBox.clientHeight >= messageBox.scrollHeight) {
-            messageScroll();
-        }
-    });
+    if (user_info.user_id === messageData.requesterID) {
+        messageScroll();
+    }
 }
 
 let messageStatus={
@@ -359,11 +371,6 @@ function loadHistoryMsgToBox(message) {
     } else {
         messageBox.appendChild(messageItem); 
     }
-    messageBox.addEventListener('scroll', function () {
-        if (messageBox.scrollTop + messageBox.clientHeight >= messageBox.scrollHeight) {
-            messageScroll();
-        }
-    });
 }
 
 function toTaiwanTime(dateTime) {
@@ -399,3 +406,4 @@ socket.on('readStatusUpdated', (roomId) => {
         });
     }
 });
+

@@ -174,8 +174,8 @@
     border-radius: 50%;
 }
 
-.groupList__item__Nickname{
-    font-size: 24px;width: 323.5px;
+.groupList__item__name{
+    font-size: 24px;
     overflow: hidden; 
     text-overflow: ellipsis; 
     white-space: nowrap;
@@ -185,4 +185,8 @@
 
 .groupList__item:hover{
     background-color: #E6E6FA; 
+}
+#groupList{
+    height: calc(100vh - 250px);
+    overflow-y: auto;
 }

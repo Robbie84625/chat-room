@@ -9,11 +9,13 @@ const multer = require('multer');
 const uuid = require('uuid');
 
 let GroupDB= require("../models/groupDB").GroupDB;
+let UserInfoDB= require("../models/userInfoDB").UserInfoDB;
 
 const dotenv = require("dotenv");
 dotenv.config()
 
 GroupDB= new GroupDB();
+UserInfoDB= new UserInfoDB();
 
 const secretKey = process.env.jwt_secrect_key;
 router.use(bodyParser.json());
@@ -96,7 +98,7 @@ router.get('/getGroupData', async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, secretKey);
     let nextPage=0;
-
+    const userData=await UserInfoDB.getUserInfo(decodedToken.userId);
     if(!keyword){
         const groupData = await GroupDB.findGroup(decodedToken.userId,pageNumber);
         if (groupData.length < 11) {
@@ -105,25 +107,32 @@ router.get('/getGroupData', async (req, res) => {
             nextPage=pageNumber+1;
         }
         let groupDataResult = {
+            "userInfo":{userNickName:userData[0].nickName,userId:userData[0].memberId},
             "nextPage": nextPage,
             "data": groupData.slice(0, 10)
         };
         res.send(JSON.stringify(groupDataResult));
     }
-    // if (keyword){
-    //     const friendshipData = await FriendDB.findFriendship_By_KeyWord(decodedToken.userId,keyword,pageNumber);
-    //     if (friendshipData.length < 11) {
-    //         nextPage = null;
-    //     } else {
-    //         nextPage=pageNumber+1;
-    //     }
-    //     let friendshipDataResult = {
-    //         "nextPage": nextPage,
-    //         "data": friendshipData.slice(0, 10)
-    //     };
-    //     res.send(JSON.stringify(friendshipDataResult));
-    // }
+    if (keyword){
+        const groupData = await GroupDB.findGroup_By_KeyWord(decodedToken.userId,keyword,pageNumber);
+        if (groupData.length < 11) {
+            nextPage = null;
+        } else {
+            nextPage=pageNumber+1;
+        }
+        let groupDataResult = {
+            "userInfo":{userNickName:userData[0].nickName,userId:userData[0].memberId},
+            "nextPage": nextPage,
+            "data": groupData.slice(0, 10)
+        };
+        res.send(JSON.stringify(groupDataResult));
+    }
     
+});
+
+router.post('/getGroupMember', async (req, res) => {
+    const groupMemberData=await GroupDB.getGroupMember(req.body.guildID);
+    res.send(JSON.stringify({groupMemberData:groupMemberData}));
 });
 
 module.exports = { router };

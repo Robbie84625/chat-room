@@ -151,15 +151,15 @@
                         <input type="text" placeholder="搜尋公會" class="contact__input" style="margin-top: 5px;" id="groupInput"/>
                         <button class="createGroup-btn">創建公會</button>
                         <img src="/images/ufo.gif" alt="notice loading" class="contact__loading" id="groupListLoading" style="display: block;"/>
-                        <div class="contact__list" id="groupList">
-
+                        <div class="contact__container" id="groupList">
+                            
                         </div>
                     </div>
 
                     
                     
 
-                    <div style="height: 100vh;background-color: #ffffff;display: none;"id="friendChartRoom">
+                    <div style="height: 100vh;background-color: #ffffff;display: none;"id="friendChatRoom">
                         <div class="chatRoom bg-lightPurple">
                             <div class="chatRoom__header">
                                 <div class="tittle bg-purple">
@@ -171,7 +171,7 @@
                                 <div style="position: relative; padding: 25px 0px 0px 0px;">
                                     <div class="TaskBar">
                                         <img src="/images/phoneIcon.jpg" alt="phone icon" class="chatRoom__phone">
-                                        <img src="/images/imageIcon.jpg" alt="upload image icon" class="chatRoom__img">
+                                        <img src="/images/imageIcon.jpg" alt="upload image icon" class="chatRoom__img" style="margin-left: 10px;">
                                     </div>
                                     <div class="chatRoom__statusBar">
                                         <div class="chatRoom__statusBar__status" id="onlineStatus"></div>
@@ -201,17 +201,67 @@
                         </div>
                     </div>
 
+                    <div style="height: 100vh;background-color: #ffffff;display: none;"id="groupChatRoom">
+                        <div class="chatRoom bg-lightPurple">
+                            <div class="chatRoom__header">
+                                <div class="tittle bg-purple">
+                                    <div class="tittle__text text-white" style="font-weight: 700;" id="groupName">
+                                        NBA交流區
+                                    </div>
+                                </div>
+                                <div style="position: relative; padding: 25px 0px 0px 0px;">
+                                    <div class="TaskBar">
+                                        <div>
+                                            <img src="/images/phoneIcon.jpg" alt="phone icon" class="chatRoom__phone">
+                                            <div style="width: 50px;font-weight: 700;color: #00C300;margin: 0px auto;">公會通話</div>
+                                        </div>
+                                        <div style="margin-left: 10px;">
+                                            <img src="/images/imageIcon.jpg" alt="upload image icon" class="chatRoom__img">
+                                            <div style="width: 50px;font-weight: 700;color: #00C300;margin: 0px auto;">分享相片</div>
+                                        </div>
+                                        <div style="margin-left: 10px;">
+                                            <img src="/images/groupMember.png" alt="upload image icon" class="chatRoom__img">
+                                            <div style="width: 50px;font-weight: 700;color: #00C300;margin: 0px auto;">公會成員</div>
+                                        </div>
+                                        <div style="margin-left: 10px;">
+                                            <img src="/images/others.png" alt="upload image icon" class="chatRoom__img">
+                                            <div style="width: 50px;font-weight: 700;color: #00C300;margin: 0px auto;">其他支援</div>
+                                        </div>
+                                        
+                                    </div>
+                                    <img src="/images/head-shot-default.png" alt="head shot" class="headShot" id="groupAvatar">
+                                </div>
+                            </div>
+
+                            <div class="chatRoom__middle bg-white" id="groupMessageBox">
+                            </div>
+
+                            <div class="chatRoom__footer">
+                                <div class="emojiTaskBar">
+                                    <div style="font-size: 32px;">😎</div>
+                                    <img src="/images/doorbell.png" alt="doorbell" style="width: 43px;height: 43px;margin-left: 30px;">
+                                </div>
+                                <div style="padding: 0px 10px 40px 10px;">
+                                    <div style="background-color: #ffffff; height: 80px; width: 100%;display: flex;">
+                                        <textarea class="sendMessageArea no-outline" id="groupMessageInput"></textarea>
+                                        <button style="width: 100px;"id="sendGroupMessage-btn">送出</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
     <script src="socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="scripts/groupList.js"></script>
-    <script type="text/javascript" src="scripts/addGroup.js"></script>
     <script type="text/javascript" src="scripts/chatRoom.js"></script>
+    <script type="text/javascript" src="scripts/userInfo.js"></script>
+    <script type="text/javascript" src="scripts/addGroup.js"></script>
     <script type="text/javascript" src="scripts/addFriend.js"></script>
     <script type="text/javascript" src="scripts/notice.js"></script>
     <script type="text/javascript" src="scripts/friendList.js"></script>
-    <script type="text/javascript" src="scripts/userInfo.js"></script>
+    <script type="text/javascript" src="scripts/groupList.js"></script>
 </body>
 </html>
