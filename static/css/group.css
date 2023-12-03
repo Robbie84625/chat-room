@@ -190,3 +190,69 @@
     height: calc(100vh - 250px);
     overflow-y: auto;
 }
+
+.groupMemberContainer {
+    position: absolute;
+    left: 725px;
+    top: 225px; 
+    width: 350px; max-height: 600px; 
+    z-index: 3; 
+    border-radius: 15px;
+    overflow: hidden;
+    display: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.groupMemberContainer__header{
+    height: 38px;
+    font-weight: 700;font-size: 28px;
+    padding: 5px 10px;
+    text-align: center;
+    position: relative;
+    background-color: #ADD8E6;
+}
+
+.groupMemberContainer__header__exitIcon{
+    position: absolute; 
+    width: 48px; height: 48px; 
+    top: 0; right: 0;
+}
+
+.groupMemberContainer__list{
+    padding: 10px;overflow-y: auto;
+    max-height: 522px;
+}
+
+.groupMemberContainer__list__item{
+    padding: 10px;display: grid;grid-template-columns:80px 1fr;gap: 10px; height: 80px;border-bottom: 1px solid #ccc;
+}
+.groupMemberContainer__list__item__headShot{
+    width: 78px;
+    height: 78px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid lightgray;
+}
+
+.groupMemberContainer__list__item__nickname{
+    font-size: 24px;width: 220px;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    font-weight:700;font-size: 24px;color:#8A2BE2
+}
+
+.groupMemberContainer__list__item__position{
+    font-size: 14px;font-weight: 700;color: gray;
+    margin-top: 10px;width: 220px;
+    overflow: hidden;text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.whiteMask{
+    width: 100%; height: 100%;
+    position: fixed;
+    z-index: 2;
+    display: none;
+    background-color: rgba(255, 255, 255, 0.8);
+}

@@ -24,6 +24,10 @@
     background: rgba(0, 0, 0, 0.75);
 }
 
+.text-green{
+    color: #00C300;
+}
+
 .text-darkPurple{
     color:   #4B0082;
 }
@@ -53,12 +57,3 @@
     background-color: #E6E6FA;
 }
 
-.chatRoom__phone{
-    width: 70px;height: 70px;
-}
-.chatRoom__img{
-    width: 70px;height: 70px;
-}
-.chatRoom__phone:hover, .chatRoom__img:hover {
-    filter: contrast(80%);
-}

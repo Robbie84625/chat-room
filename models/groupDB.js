@@ -73,8 +73,9 @@ class GroupDB {
     }
     async getGroupMember(guildID){
         const queryMySQL = `
-            SELECT guild_member.memberID,guild_member.isAdmin
+            SELECT guild_member.memberID,guild_member.isAdmin,member.nickName,member.headshot
             FROM guild_member
+            JOIN member ON guild_member.memberID = member.memberID
             WHERE guild_member.guildID = ?;
         `;
         value = [guildID];

@@ -161,6 +161,13 @@ document.getElementById('groupHeadShot').addEventListener('click', function () {
 
 async function upLoadGroupHeadShot(){
     document.getElementById("groupHeadShotInput").addEventListener("change", function() {
+        if (this.files && this.files[0]) {
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!validTypes.includes(this.files[0].type)) {
+                alert('請選擇有效的圖片檔案（jpg, jpeg, png, gif）。');
+                return;
+            }
+        }
         let headShotFile = this.files[0];
         if (headShotFile) {        
             const reader = new FileReader();

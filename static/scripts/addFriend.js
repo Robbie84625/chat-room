@@ -1,5 +1,6 @@
 const token = localStorage.getItem('token');
 
+
 //打開邀請好友頁面
 document.getElementById("openAddFriend").addEventListener("click", () => {
     let addFriendContainer=document.getElementById("addFriendContainer");

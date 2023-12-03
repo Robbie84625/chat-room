@@ -10,13 +10,15 @@ const corsOptions = {
 };
 
 let ChatDB = require("./models/chatDB").ChatDB;
+let LoginDB = require("./models/loginDB").LoginDB;
 
+LoginDB = new LoginDB();
 ChatDB = new ChatDB();
 
 const setupSocketServer = (server) => {
     const io = socketIO(server, {
         cors: {
-            origin: 'https://chat-room.robbieliu.com', // 指定前端來源
+            origin: 'https://chat-room.robbieliu.com', 
             methods: ["GET", "POST"],
         },
     });
@@ -31,14 +33,25 @@ const setupSocketServer = (server) => {
         });
     
         socket.on('sendMessage', async(data, roomId) => {
-            await ChatDB.insertPersonalMessage(data.requesterID, data.recipientID, data.message);
-            io.in(roomId).emit('receiveMessage', data)
+            await ChatDB.insertPersonalMessage(data.requesterID, data.recipientID, data.message,data.contentType);
+            io.in(roomId).emit('receiveMessage', data);
+        });
+
+        socket.on('sendFile', async(data, roomId) => {
+            await ChatDB.insertPersonalMessage(data.requesterID, data.recipientID, data.message,data.contentType);
+            io.in(roomId).emit('receiveFile', data);
         });
 
         socket.on('sendGroupMessage', async(data, groupRoomId) => {
-            await ChatDB.insertGroupMessage(data.guildID,data.userId,data.message,data.groupMember);
+            await ChatDB.insertGroupMessage(data.guildID,data.userId,data.message,data.groupMember,data.contentType);
             io.in(groupRoomId).emit('receiveGroupMessage', data)
         });
+
+        socket.on('sendGroupFile', async(data, roomId) => {
+            await ChatDB.insertGroupMessage(data.guildID,data.userId,data.message,data.groupMember,data.contentType);
+            io.in(roomId).emit('receiveGroupFile', data);
+        });
+
         //socket io設定
         socket.on('updateReadStatus', async (data) => {
             const { roomId, friendId,userId} = data;
@@ -50,11 +63,13 @@ const setupSocketServer = (server) => {
             }
         });
 
-        socket.on('login', (data) => {
+        socket.on('login', async (data) => {
             socket.broadcast.emit('userOnline', { memberId: data.memberId });
+            await LoginDB.updateToOnline(data.memberId);
         });
-        socket.on('preDisconnect', (data) => {
+        socket.on('preDisconnect', async (data) => {
             socket.broadcast.emit('userOffline', { memberId: data.memberId });
+            await LoginDB.updateToOffline(data.memberId);
         });
         
     });

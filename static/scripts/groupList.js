@@ -110,7 +110,7 @@ function createGroupData(detail){
     let groupAvatar = groupItemDiv.querySelector('.groupList__item__avatar');
     
     groupName.textContent = detail.guildName;
-    groupAvatar.src = detail.guildAvatar || "/images/head-shot-default.png";
+    groupAvatar.src = detail.guildAvatar || "/images/group.png";
 
     let groupListDiv = document.getElementById('groupList');
     groupListDiv.appendChild(groupItemDiv);
@@ -120,6 +120,7 @@ function createGroupData(detail){
         document.getElementById('groupName').textContent=detail.guildName;
         document.getElementById('groupAvatar').src= detail.guildAvatar || "/images/group.png";
         document.getElementById('groupMessageBox').innerHTML='';
+        document.getElementById('groupMessageInput').value='';
         groupMember=await get_groupMember(detail.guildID);
         fetch_firstPage_groupMessage(detail.guildID,user_info.user_id);
         //根據群組id來生成Room id
@@ -131,6 +132,7 @@ function createGroupData(detail){
     });
     
 }
+chooseFile_to_group();
 
 async function get_groupMember(guildID){
     const response = await fetch('/getGroupMember', {
@@ -161,8 +163,9 @@ document.getElementById('sendGroupMessage-btn').addEventListener('click', functi
 });
 
 function sendMessage_to_group(guildID,userId,userNickName, message,groupRoomId,groupMemberIDs){
-    
+    let contentType='text';
     let data = {
+        contentType:contentType,
         guildID:guildID,
         groupMember:groupMemberIDs,
         userId:userId,
@@ -209,8 +212,121 @@ function appendGroupMessageToBox(messageData) {
         groupMessageScroll(messageBox);
     }
 }
+
 function groupMessageScroll(messageBox){
     messageBox.scrollTop = messageBox.scrollHeight;
+}
+
+function chooseFile_to_group(){
+    let toGroupFile;
+    document.getElementById('sendFileToGroup').addEventListener('click', function(){
+        document.getElementById('uploadToGroupInput').value = '';
+        document.getElementById('uploadToGroupInput').click();
+    });
+    
+    document.getElementById("uploadToGroupInput").addEventListener("change", async function() {
+        if (!this.files || this.files.length === 0) {
+            return;
+        }
+
+        const file = this.files[0];
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'video/mp4'];
+        const maxFileSize = 100 * 1024 * 1024; // 100MB的限制
+
+        if (!validTypes.includes(file.type)) {
+            alert('請選擇有效的圖片或影片檔案（jpg, jpeg, png, gif, mp4）。');
+            return;
+        }
+
+        if (file.size > maxFileSize) {
+            alert('本檔案超出容量上限，請勿上傳。');
+            return;
+        }
+        document.getElementById('uploadGroupFileLoading').style.display='flex';
+        toGroupFile = this.files[0];
+        let userNickName=user_info.user_nickName;
+        let guildID=groupRoom_manager.data.guildID;
+        let userId=user_info.user_id;
+        let groupRoomId=groupRoom_manager.groupRoomId;
+        let groupMemberIDs=groupRoom_manager.groupMember.map(member => member.memberID);
+        const formData = new FormData();
+        formData.append('file', toGroupFile);
+        fileData = await uploadFile_to_group(formData);
+        fileDataUrl = fileData.url;
+        fileType = fileData.fileType.split('/')[0];
+        sendFile_to_group(guildID,userId,userNickName,fileDataUrl,fileType,groupRoomId,groupMemberIDs);
+    });
+}
+
+async function uploadFile_to_group(formData){
+    
+    let token=localStorage.getItem('token');
+    
+    const response = await fetch('/uploadToGroup', {
+        method: "POST",
+        body: formData,
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+    data=await response.json();
+    return data['updateParams'];
+    
+}
+
+function sendFile_to_group(guildID,userId,userNickName,fileDataUrl,fileType,groupRoomId,groupMemberIDs){
+    let contentType=fileType;
+    let data = {
+        contentType:contentType,
+        guildID:guildID,
+        groupMember:groupMemberIDs,
+        userId:userId,
+        userNickName:userNickName,
+        message:fileDataUrl,
+        groupRoomId:groupRoomId
+    };
+    
+    socket.emit('sendGroupFile', data, groupRoomId);
+};
+
+socket.on('receiveGroupFile', (data) => {
+    appendGroupFileToBox(data);
+});
+
+function appendGroupFileToBox(messageData) {
+    const messageBox = document.getElementById('groupMessageBox');
+
+    const messageItem = document.createElement('div');
+    messageItem.classList.add('messageBox__item');
+
+    const date = new Date();
+    const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+    const timeString = date.toLocaleTimeString('zh-CN', options);
+
+    let fileHtml;
+
+    if (messageData.contentType === 'image') {
+        fileHtml = `<img src="${messageData.message}" class="messageBox__item__file" alt="Image">`;
+    } else if (messageData.contentType === 'video') {
+        fileHtml = `<video src="${messageData.message}" class="messageBox__item__file" controls></video>`;
+    }
+
+    messageItem.innerHTML = `
+        <div class="messageBox__item__nickName">${messageData.userNickName} :</div>
+        ${fileHtml}
+        <div class="messageBox__item__dateAndRead">
+            <div class="read-status"></div>
+            <div>${timeString}</div>
+        </div>
+    `;
+
+    messageBox.appendChild(messageItem);
+
+    document.getElementById('uploadGroupFileLoading').style.display='none';
+
+    if (user_info.user_id === messageData.requesterID) {
+        messageScroll();
+    }
 }
 
 document.getElementById('groupInput').addEventListener('input', function() {
@@ -218,6 +334,7 @@ document.getElementById('groupInput').addEventListener('input', function() {
     document.getElementById('groupList').innerHTML='';
     fetch_firstPage_groupList(groupListLoading)
 });
+
 const groupListDiv = document.getElementById('groupList');
 groupListDiv.addEventListener('scroll', async function() {
     if (groupListDiv.scrollTop + groupListDiv.clientHeight >= groupListDiv.scrollHeight) {
@@ -262,7 +379,6 @@ async function getGroupMessage__from__database(guildID,userID,page){
     let result = await response.json();
     groupMessageStatus.isLoading = false;
     for(let message of result.data){
-        
         loadGroupMsgToBox(message)
     }
     if (result.nextPage !== null) {
@@ -273,22 +389,33 @@ async function getGroupMessage__from__database(guildID,userID,page){
 }
 
 function loadGroupMsgToBox(message) {
+    let htmlContent;
+    if (message.contentType === 'image') {
+        htmlContent = `<img src="${message.content}" class="messageBox__item__file" alt="Image">`;
+    } else if (message.contentType === 'video') {
+        htmlContent = `<video src="${message.content}" class="messageBox__item__file" controls></video>`;
+    }
+    else{
+        htmlContent =`<div class="messageBox__item__content">${message.content}</div>`;
+    }
+
     const groupMessageBox = document.getElementById('groupMessageBox');
     const messageItem = document.createElement('div');
     messageItem.classList.add('messageBox__item');
     
     dateTime=toTaiwanTime(message.timestamp);
+
     messageItem.innerHTML = `
         <div class="messageBox__item__nickName">${message.senderNickName} :</div>
-        <div class="messageBox__item__content">${message.content}</div>
+        ${htmlContent}
         <div class="messageBox__item__dateAndRead">
             <div>${dateTime}</div>
         </div>
     `;
     const messageContent = messageItem.querySelector('.messageBox__item__content');
-    
-    messageContent.style.backgroundColor = user_info.user_nickName !== message.senderNickName ? '#ccffcc' : '#E0F7FA';
-
+    if(messageContent){
+        messageContent.style.backgroundColor = user_info.user_nickName !== message.senderNickName ? '#ccffcc' : '#E0F7FA';
+    }
     if (groupMessageBox.firstChild) {
         groupMessageBox.insertBefore(messageItem, groupMessageBox.firstChild);
     } else {
@@ -303,4 +430,46 @@ groupMessageBox.addEventListener('scroll', function () {
         let guildID=groupRoom_manager.data.guildID;
         getGroupMessage__from__database(guildID,userID,page)
     }
+});
+
+document.getElementById('exitGroupMember').addEventListener('click', function() {
+    document.getElementById("whiteMask").style.display='none';
+    document.getElementById("groupMemberContainer").style.display='none';
+});
+
+document.getElementById('groupMember-btn').addEventListener('click', function() {
+    document.getElementById("whiteMask").style.display='block';
+    document.getElementById("groupMemberContainer").style.display='block';
+    let groupMemberList=document.getElementById("groupMemberList");
+    groupMemberList.innerHTML = '';
+    createGroupMemberList(groupRoom_manager.groupMember)
+}); 
+
+function createGroupMemberList(groupMember){
+    for (let member of groupMember){
+        const memberItem = document.createElement('div');
+        memberItem.classList.add('groupMemberContainer__list__item');
+        memberItem.innerHTML = 
+        `<img class="groupMemberContainer__list__item__headShot"/>
+        <div>
+            <div class="groupMemberContainer__list__item__nickname" ></div>
+            <div class="groupMemberContainer__list__item__position" ></div>
+        </div>`;
+        memberItem.querySelector('.groupMemberContainer__list__item__headShot').src = member.headshot ? member.headshot : 'images/head-shot-default.png';
+        memberItem.querySelector('.groupMemberContainer__list__item__nickname').textContent=member.nickName;
+        memberItem.querySelector('.groupMemberContainer__list__item__position').textContent=member.isAdmin === 0 ? 'Acolyte' : 'BOSS';
+        groupMemberList.appendChild(memberItem);
+    }
+    
+}
+
+document.getElementById('groupEmoji').addEventListener('click', function(event) {
+    let emojiBox = document.querySelector('.emojiBox');
+    if (emojiBox.style.display === 'flex') {
+        emojiBox.style.display = 'none';
+    } else {
+        emojiBox.style.display = 'flex';
+    }
+
+    event.stopPropagation();
 });

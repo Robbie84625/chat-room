@@ -37,6 +37,7 @@ function changeButtonColor(button) {
 
 const socket = io('https://chat-room.robbieliu.com');
 
+
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token'); 
 
@@ -79,3 +80,19 @@ async function changeOnlineStatus(){
         console.error('發生錯誤:', error);
     }
 }
+
+document.querySelectorAll('.emojiBox p').forEach(function(p) {
+    p.addEventListener('click', function(event) {
+        let emoji = event.target.textContent;
+        let groupChatRoom = document.getElementById('groupChatRoom');
+        let friendChatRoom = document.getElementById('friendChatRoom');
+        let groupMessageInput = document.getElementById('groupMessageInput');
+        let messageInput = document.getElementById('messageInput');
+
+        if (window.getComputedStyle(groupChatRoom).display === 'block') {
+            groupMessageInput.value += emoji;
+        } else if (window.getComputedStyle(friendChatRoom).display === 'block') {
+            messageInput.value += emoji;
+        }
+    });
+});

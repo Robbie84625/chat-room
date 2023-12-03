@@ -4,9 +4,9 @@ dotenv.config();
 
 let result;
 class ChatDB {
-    async insertPersonalMessage(requesterID,recipientID,message){
-        let mysqlQuery = "INSERT INTO `personal_messages`(requesterID, recipientID, content) VALUES(?, ?, ?);";
-        let values = [requesterID, recipientID, message];
+    async insertPersonalMessage(requesterID,recipientID,message,contentType){
+        let mysqlQuery = "INSERT INTO `personal_messages`(requesterID, recipientID, content,contentType) VALUES(?, ?, ?, ?);";
+        let values = [requesterID, recipientID, message,contentType];
         await pool.query(mysqlQuery, values);
     }
 
@@ -15,7 +15,7 @@ class ChatDB {
         SELECT 
             m1.nickName AS requesterNickName, 
             m2.nickName AS recipientNickName, 
-            msg.content, CONVERT_TZ(msg.dateTime, '+00:00', ?) AS dateTime , msg.readStatus 
+            msg.content, CONVERT_TZ(msg.dateTime, '+00:00', ?) AS dateTime , msg.readStatus , msg.contentType 
         FROM 
             personal_messages AS msg
         JOIN 
@@ -52,15 +52,15 @@ class ChatDB {
         await pool.query(queryMySQL, values);
     }
 
-    async insertGroupMessage(guildID,userId,message,groupMember){
+    async insertGroupMessage(guildID,userId,message,groupMember,contentType){
         const insertQueryMySQL = `
-            INSERT INTO guild_messages(guildID, senderID,content) VALUES(?, ?, ?);
+            INSERT INTO guild_messages(guildID, senderID,content,contentType) VALUES(?, ?, ?, ?);
         `;
 
         const batchInsertQuery = `
             INSERT INTO guild_messagesReadStatus(messageID, memberID, isRead,guildID) VALUES ?;
         `;
-        let values = [guildID,userId,message];
+        let values = [guildID,userId,message,contentType];
         try {
             const queryResults = await pool.query(insertQueryMySQL, values);
             const messageID = queryResults[0].insertId;
@@ -89,7 +89,7 @@ class ChatDB {
         let queryMySQL = `
         SELECT 
             m.nickName AS senderNickName, 
-            g.content,
+            g.content,g.contentType,
             CONVERT_TZ(g.timestamp, '+00:00', ?) AS timestamp
         FROM 
             guild_messages g

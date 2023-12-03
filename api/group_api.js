@@ -29,7 +29,7 @@ const s3 = new S3({
 const upload = multer({
     storage: multer.memoryStorage(), 
     fileFilter: function (req,file, cb) {
-    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif|mp4)$/i)) {
         return cb(new Error('Only jpg and png formats are allowed!'), false);
     }
     cb(null, true);
@@ -133,6 +133,35 @@ router.get('/getGroupData', async (req, res) => {
 router.post('/getGroupMember', async (req, res) => {
     const groupMemberData=await GroupDB.getGroupMember(req.body.guildID);
     res.send(JSON.stringify({groupMemberData:groupMemberData}));
+});
+
+router.post('/uploadToGroup', upload.single('file'), async (req, res) => {
+    try {
+        let cloudFrontUrl;
+        let fileType=req.file.mimetype
+        let updateParams = {};
+
+        if (req.file) {
+            const fileName = uuid.v4();
+            const params = {
+                Bucket: process.env.S3_Headshot_Bucket,
+                Key: fileName,
+                Body: req.file.buffer
+            };
+
+            await s3.putObject(params);
+            const cloudFrontDomain = process.env.cloudFrontDomain;
+            cloudFrontUrl = `${cloudFrontDomain}/${fileName}`;
+
+            updateParams.url=cloudFrontUrl;
+        }
+        updateParams.fileType=fileType;
+
+        return res.status(200).json({ message: "更新成功",updateParams});
+    }catch (err) {
+        console.error("更新失敗", err);
+        return res.status(500).json({ message: "更新失敗" });
+    }
 });
 
 module.exports = { router };

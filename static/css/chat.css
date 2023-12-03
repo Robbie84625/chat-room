@@ -81,7 +81,7 @@ body{
 }
 
 .chatRoom__header{
-    height: 224px;
+    height: 240px;
 }
 
 .contact__list{
@@ -92,17 +92,45 @@ body{
     height: 38px;
     padding: 5px 10px;
     display: flex;
-    
+    justify-content: space-between;
 }
 
 .tittle__text{
     font-size: 28px;
+    font-weight: 700;
+}
+
+.loadingFile__icon{
+    width: 28px;height: 28px;display: block;margin: auto 0px;margin-left: 5px;
 }
 
 .TaskBar{
     padding:10px;
     display: flex;
 }
+
+.chatRoom__icon{
+    width: 80px;height: 80px;
+}
+.chatRoom__text{
+    text-align: center;
+    font-weight: 700;
+    font-size: 16px;
+}
+.chatRoom__groupText{
+    width: 50px;font-weight: 700;;margin: 0px auto;
+}
+
+.chatRoom__img{
+    margin-left: 20px;
+}
+.chatRoom__img__icon{
+    width: 70px;height: 70px;
+}
+.chatRoom__icon:hover {
+    filter: contrast(80%);
+}
+
 
 .chatRoom__middle{
     flex-grow: 1;
@@ -132,6 +160,16 @@ body{
     padding: 10px;
 }
 
+.messageBox__item__file{
+    max-width: 300px;
+    max-height: 300px;
+    width: auto; 
+    height: auto; 
+    display: block; 
+    object-fit: contain;
+    border-radius: 15px;
+}
+
 .messageBox__item__dateAndRead{
     align-self: flex-end; font-size: 16px; color: gray; margin-left: 10px;
 }
@@ -159,3 +197,41 @@ body{
 }
 
 
+.emojiBox {
+    width: 280px;
+    height: 300px;
+    background-color: white;
+    border: 2px solid black;
+    position: absolute;
+    left: 525px;
+    bottom: 190px;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0px 10px;
+    display: none;
+}
+
+.emojiBox p{
+    width: 28px;
+}
+
+.openEmojiBox {
+    font-size: 32px;
+}
+
+.openEmojiBox:hover {
+    transform: scale(1.1); 
+}
+
+.emojiBox p:hover {
+    transform: scale(1.1); 
+}
+
+.doorbell{
+    width: 43px;height: 43px;margin-left: 30px;
+}
+
+.doorbell:hover {
+    transform: scale(1.1); 
+}

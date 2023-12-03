@@ -119,8 +119,10 @@
 
 .headShot{
     position: absolute;
-    right: 10px;top:5px;
-    height: 166px;width: 124px;
+    right: 10px;top:10.5px;
+    height: 165px;width: 123px;
+    border: 1px solid lightgray;
+    background-color: #ffffff;
     object-fit: cover;
 }
 #friendList{

@@ -15,6 +15,9 @@
     <div class="mask bg-black" id="mask">
         
     </div>
+    <div class="whiteMask bg-black" id="whiteMask" >
+
+    </div>
 
     <div class="addFriendContainer bg-gray" id="addFriendContainer">
         <div class="addFriendContainer__header bg-blue">
@@ -86,7 +89,16 @@
             <img src="images/loading.gif" style="position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);"/>
         </div>
     </div>
-
+    
+    <div class="groupMemberContainer bg-white" id="groupMemberContainer">
+        <div class="groupMemberContainer__header">
+            <img src="/images/exit.png" class="groupMemberContainer__header__exitIcon" id="exitGroupMember"/>
+            成員名冊
+        </div>
+        <div class="groupMemberContainer__list" id="groupMemberList">
+            
+        </div>
+    </div>
     
     <div>
         <div style="display: flex; height: 100vh;">
@@ -167,11 +179,22 @@
                                         <span id="onlineStatusEmoji"></span>
                                         <span id="receiverNickName">friend's nickname</span> (<span id="receiverEmailPrefix">Friend's email prefix</span>)
                                     </div>
+                                    <div class="text-white tittle__text" style="margin-right: 10px;display: none;" id="uploadFileLoading">
+                                        <div>正在上傳</div>
+                                        <img src="images/loadingFile.gif" alt="upload file loading" class="loadingFile__icon">
+                                    </div>
                                 </div>
-                                <div style="position: relative; padding: 25px 0px 0px 0px;">
+                                <div style="position: relative; padding: 0px 0px 0px 0px;">
                                     <div class="TaskBar">
-                                        <img src="/images/phoneIcon.jpg" alt="phone icon" class="chatRoom__phone">
-                                        <img src="/images/imageIcon.jpg" alt="upload image icon" class="chatRoom__img" style="margin-left: 10px;">
+                                        <div class="chatRoom__phone">
+                                            <img src="/images/phoneIcon.jpg" alt="phone icon" class="chatRoom__icon"/>
+                                            <div class="chatRoom__text text-green"> 通話</div>
+                                        </div>
+                                        <div class="chatRoom__img">
+                                            <img src="/images/imageIcon.jpg" alt="upload image icon" class="chatRoom__icon" id="sendFileToFriend"/>
+                                            <div class="chatRoom__text text-green"> 圖片 | 影音</div>
+                                            <input type="file" name="file" id="uploadToFriendInput" style="display:none">
+                                        </div>
                                     </div>
                                     <div class="chatRoom__statusBar">
                                         <div class="chatRoom__statusBar__status" id="onlineStatus"></div>
@@ -188,8 +211,8 @@
 
                             <div class="chatRoom__footer">
                                 <div class="emojiTaskBar">
-                                    <div style="font-size: 32px;">😎</div>
-                                    <img src="/images/doorbell.png" alt="doorbell" style="width: 43px;height: 43px;margin-left: 30px;">
+                                    <div class="openEmojiBox" id="personalEmoji">😎</div>
+                                    <img src="/images/doorbell.png" alt="doorbell" class="doorbell">
                                 </div>
                                 <div style="padding: 0px 10px 40px 10px;">
                                     <div style="background-color: #ffffff; height: 80px; width: 100%;display: flex;">
@@ -205,27 +228,30 @@
                         <div class="chatRoom bg-lightPurple">
                             <div class="chatRoom__header">
                                 <div class="tittle bg-purple">
-                                    <div class="tittle__text text-white" style="font-weight: 700;" id="groupName">
-                                        NBA交流區
+                                    <div class="tittle__text text-white" style="font-weight: 700;" id="groupName"></div>
+                                    <div class="text-white tittle__text" style="margin-right: 10px;display: none;" id="uploadGroupFileLoading">
+                                        <div>正在上傳</div>
+                                        <img src="images/loadingFile.gif" alt="upload file loading" class="loadingFile__icon">
                                     </div>
                                 </div>
                                 <div style="position: relative; padding: 25px 0px 0px 0px;">
                                     <div class="TaskBar">
                                         <div>
-                                            <img src="/images/phoneIcon.jpg" alt="phone icon" class="chatRoom__phone">
-                                            <div style="width: 50px;font-weight: 700;color: #00C300;margin: 0px auto;">公會通話</div>
+                                            <img src="/images/phoneIcon.jpg" alt="phone icon" class="chatRoom__icon">
+                                            <div class="chatRoom__groupText text-green">公會通話</div>
                                         </div>
                                         <div style="margin-left: 10px;">
-                                            <img src="/images/imageIcon.jpg" alt="upload image icon" class="chatRoom__img">
-                                            <div style="width: 50px;font-weight: 700;color: #00C300;margin: 0px auto;">分享相片</div>
+                                            <img src="/images/imageIcon.jpg" alt="upload image icon" class="chatRoom__icon" id="sendFileToGroup">
+                                            <div class="chatRoom__groupText text-green">影音相片</div>
+                                            <input type="file" name="file" id="uploadToGroupInput" style="display:none">
                                         </div>
                                         <div style="margin-left: 10px;">
-                                            <img src="/images/groupMember.png" alt="upload image icon" class="chatRoom__img">
-                                            <div style="width: 50px;font-weight: 700;color: #00C300;margin: 0px auto;">公會成員</div>
+                                            <img src="/images/groupMember.png" alt="upload image icon" class="chatRoom__icon"id="groupMember-btn">
+                                            <div class="chatRoom__groupText text-green">公會成員</div>
                                         </div>
                                         <div style="margin-left: 10px;">
-                                            <img src="/images/others.png" alt="upload image icon" class="chatRoom__img">
-                                            <div style="width: 50px;font-weight: 700;color: #00C300;margin: 0px auto;">其他支援</div>
+                                            <img src="/images/others.png" alt="upload image icon" class="chatRoom__icon">
+                                            <div class="chatRoom__groupText text-green">其他支援</div>
                                         </div>
                                         
                                     </div>
@@ -238,8 +264,8 @@
 
                             <div class="chatRoom__footer">
                                 <div class="emojiTaskBar">
-                                    <div style="font-size: 32px;">😎</div>
-                                    <img src="/images/doorbell.png" alt="doorbell" style="width: 43px;height: 43px;margin-left: 30px;">
+                                    <div class="openEmojiBox" id="groupEmoji">😎</div>
+                                    <img src="/images/doorbell.png" alt="doorbell" class="doorbell">
                                 </div>
                                 <div style="padding: 0px 10px 40px 10px;">
                                     <div style="background-color: #ffffff; height: 80px; width: 100%;display: flex;">
@@ -250,11 +276,48 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="emojiBox">
+        <p>😀</p>
+        <p>😄</p>
+        <p>😁</p>
+        <p>😆</p>
+        <p>😅</p>
+        <p>😂</p>
+        <p>🤣</p>
+        <p>😇</p>
+        <p>😉</p>
+        <p>🥰</p>
+        <p>😘</p>
+        <p>🤪</p>
+        <p>😝</p>
+        <p>🤑</p>
+        <p>😎</p>
+        <p>🤡</p>
+        <p>🥳</p>
+        <p>😏</p>
+        <p>😶</p>
+        <p>😒</p>
+        <p>🤔</p>
+        <p>😡</p>
+        <p>😬</p>
+        <p>💩</p>
+        <p>🤖</p>
+        <p>😈</p>
+        <p>👻</p>
+        <p>😺</p>
+        <p>👍</p>
+        <p>💪</p>
+        <p>🙌</p>
+        <p>👏</p>
+        <p>👊</p>
+        <p>👀</p>
+    </div>
+
     <script src="socket.io/socket.io.js"></script>
     <script type="text/javascript" src="scripts/chatRoom.js"></script>
     <script type="text/javascript" src="scripts/userInfo.js"></script>
