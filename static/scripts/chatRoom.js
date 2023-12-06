@@ -1,5 +1,11 @@
 let checkToken =localStorage.getItem('token');
 
+let user_info={
+    "user_id":0,
+    "friend_id":0,
+    "user_nickName":''
+}
+
 async function checkTokenExist() {
     let token = localStorage.getItem('token');
     if (!token) {
@@ -37,7 +43,6 @@ function changeButtonColor(button) {
 
 const socket = io('https://chat-room.robbieliu.com');
 
-
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token'); 
 
@@ -53,6 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const data = await response.json();
             if (data.status === 'success') {
+                user_info.user_id=data.memberId;
                 socket.emit('login', { memberId: data.memberId });
             } 
         } catch (error) {
@@ -95,4 +101,8 @@ document.querySelectorAll('.emojiBox p').forEach(function(p) {
             messageInput.value += emoji;
         }
     });
+});
+
+socket.on('getMessage', (message) => {
+    // 處理接收到的消息
 });

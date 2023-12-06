@@ -18,10 +18,12 @@ function friendAppear(){
     let friendPage = document.getElementById("friendPage");
     let groupContainer = document.getElementById("groupContainer");
     let noticePage=document.getElementById("noticePage");
+    let chatContainer=document.getElementById("chatContainer");
 
     friendPage.style.display="block";
     groupContainer.style.display="none";
     noticePage.style.display="none";
+    chatContainer.style.display="none";
 }
 
 let friendListStatus = {
@@ -37,12 +39,6 @@ function fetch_firstPage_friendList(friendListLoading){
     friendListLoading.style.display="black";
     friendAppear();
     getFriendList_from_database(page,friendListLoading);
-}
-
-let user_info={
-    "user_id":0,
-    "friend_id":0,
-    "user_nickName":''
 }
 
 async function getFriendList_from_database(page,friendListLoading = null){
@@ -65,7 +61,7 @@ async function getFriendList_from_database(page,friendListLoading = null){
             },
         });
         const data = await response.json();
-        noFriend.style.display = data['data'].length < 1 && data['nextPage']!==null ? 'block' : 'none';
+        noFriend.style.display = data['data'].length < 1 && data['nextPage']===null ? 'block' : 'none';
         friendListStatus.isLoading = false;
         if (friendListLoading) {
             friendListLoading.style.display = "none";
@@ -256,6 +252,8 @@ function sendMessage_to_friend(requesterID,recipientID,requesterNickName,friendN
     };
     
     socket.emit('sendMessage', data, roomId);
+    const memberReceiveId = `m${recipientID}`;
+    socket.emit('getMessage', data, memberReceiveId);
 };
 
 socket.on('receiveMessage', (data) => {

@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 let ChatDB = require("../models/chatDB").ChatDB;
 ChatDB = new ChatDB();
 
+const secretKey = process.env.jwt_secrect_key;
 const dotenv = require("dotenv");
 dotenv.config()
 
@@ -47,6 +48,26 @@ router.post('/getGroupMessage', async (req, res) => {
         "data": groupChatData.slice(0, 10)
     };
     res.send(JSON.stringify(groupChatDataResult));
+});
+
+router.get('/getMessageData', async (req, res) => {
+    const page = req.query.page || 0;
+    const pageNumber = parseInt(page, 10);
+
+    const token = req.headers.authorization.split(' ')[1];
+    const decodedToken = jwt.verify(token, secretKey);
+    let nextPage=0;
+    const AllMessageData = await ChatDB.findAllMessage(decodedToken.userId,pageNumber);
+        if (AllMessageData.length < 11) {
+            nextPage = null;
+        } else {
+            nextPage=pageNumber+1;
+        }
+        let AllMessageDataResult = {
+            "nextPage": nextPage,
+            "data": AllMessageData.slice(0, 10)
+        };
+        res.send(JSON.stringify(AllMessageDataResult));
 });
 
 module.exports = { router};

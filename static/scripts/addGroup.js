@@ -242,7 +242,11 @@ async function upload_groupMember(groupId,groupMember){
     });
     if (response.ok) {
         document.querySelector(".sureCreateGroup-btn").disabled = false;
-        document.getElementById('createGroupLoading').style.display='none';
+        document.getElementById('groupList').innerHTML='';
+        let groupListLoading = document.getElementById("groupListLoading");
+        await fetch_firstPage_groupList(groupListLoading);
+
+        document.getElementById('createGroupLoading').style.display = 'none';
         exit_CreateGroup();
     } else {
         console.error("錯誤:", responseData.message);

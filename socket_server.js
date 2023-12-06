@@ -33,8 +33,12 @@ const setupSocketServer = (server) => {
         });
     
         socket.on('sendMessage', async(data, roomId) => {
-            await ChatDB.insertPersonalMessage(data.requesterID, data.recipientID, data.message,data.contentType);
+            // await ChatDB.insertPersonalMessage(data.requesterID, data.recipientID, data.message,data.contentType);
             io.in(roomId).emit('receiveMessage', data);
+        });
+
+        socket.on('getMessage', async(data, memberReceiveId) => {
+            console.log(data, memberReceiveId)
         });
 
         socket.on('sendFile', async(data, roomId) => {
@@ -58,6 +62,16 @@ const setupSocketServer = (server) => {
             if (roomId && friendId) {
                 socket.to(roomId).emit('readStatusUpdated', roomId);
                 await ChatDB.updateReadStatus(userId,friendId);
+            } else {
+                console.error('Invalid data received in updateReadStatus:', data);
+            }
+        });
+
+        socket.on('updateGroupReadStatus', async (data) => {          
+            const { roomId, guildID,userId} = data;
+            if (roomId && guildID) {
+                socket.to(roomId).emit('readStatusUpdated', roomId);
+                await ChatDB.updateGroupReadStatus(guildID,userId);
             } else {
                 console.error('Invalid data received in updateReadStatus:', data);
             }

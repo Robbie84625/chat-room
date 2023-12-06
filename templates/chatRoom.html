@@ -158,16 +158,26 @@
                     </div>
 
                     <div class="contact" id="groupContainer">
-                            <div class="contact__title">公會列表</div>
+                        <div class="contact__title">公會列表</div>
                         
                         <input type="text" placeholder="搜尋公會" class="contact__input" style="margin-top: 5px;" id="groupInput"/>
                         <button class="createGroup-btn">創建公會</button>
-                        <img src="/images/ufo.gif" alt="notice loading" class="contact__loading" id="groupListLoading" style="display: block;"/>
+                        <img src="/images/ufo.gif" alt="notice loading" class="contact__loading" id="groupListLoading"/>
                         <div class="contact__container" id="groupList">
                             
                         </div>
                     </div>
 
+                    <div class="contact" id="chatContainer">
+                        <div class="contact__title">聊天</div>
+                        <img src="/images/ufo.gif" alt="chat loading" class="contact__loading" id="chatListLoading"/>
+                        <div class="noChat" id="noChat">
+                            找不到訊息
+                        </div>
+                        <div class="contact__container" id="chatList">
+                            
+                        </div>
+                    </div>
                     
                     
 
@@ -326,5 +336,6 @@
     <script type="text/javascript" src="scripts/notice.js"></script>
     <script type="text/javascript" src="scripts/friendList.js"></script>
     <script type="text/javascript" src="scripts/groupList.js"></script>
+    <script type="text/javascript" src="scripts/chatList.js"></script>
 </body>
 </html>

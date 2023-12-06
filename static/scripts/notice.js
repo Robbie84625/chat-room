@@ -10,10 +10,12 @@ function noticeAppear(){
     let friendPage = document.getElementById("friendPage");
     let groupContainer = document.getElementById("groupContainer");
     let noticePage=document.getElementById("noticePage");
+    let chatContainer=document.getElementById("chatContainer");
 
     friendPage.style.display="none";
     groupContainer.style.display="none";
     noticePage.style.display="block";
+    chatContainer.style.display="none";
 }
 
 async function getInviteData_from_database(noticePageStatus,contact__loading = null){

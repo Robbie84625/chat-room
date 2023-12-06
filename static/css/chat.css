@@ -235,3 +235,47 @@ body{
 .doorbell:hover {
     transform: scale(1.1); 
 }
+
+.noChat{
+    font-weight: 700;color: blueviolet;
+    margin-top: 30px;margin-left: 30px;
+}
+
+.chatList__item{
+    padding: 10px;display: grid;grid-template-columns:79.5px 1fr;gap: 10px; height: 106px;border-bottom: 1px solid #ccc;
+    position: relative;
+}
+
+.chatList__item__avatar{
+    width: 79.5px; height: 106px;
+    object-fit: cover;
+}
+
+.chatList__item__message{
+    font-size: 16px;font-weight: 700;color: gray;line-height: 21px;
+    margin-top: 6px;width: 300px;
+    overflow: hidden;text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; 
+    -webkit-box-orient: vertical;
+    white-space: normal
+}
+
+.chatList__item__name{
+    font-size: 24px;width: 300px;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    font-weight:700;font-size: 24px;color:#8A2BE2
+}
+.chatList__item__emailIcon{
+    margin-right: 20px ;
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    transform: translateY(-50%); 
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: blue;
+}

@@ -28,10 +28,12 @@ function groupListAppear(){
     let friendPage = document.getElementById("friendPage");
     let groupContainer = document.getElementById("groupContainer");
     let noticePage=document.getElementById("noticePage");
+    let chatContainer=document.getElementById("chatContainer");
 
     friendPage.style.display="none";
     groupContainer.style.display="block";
     noticePage.style.display="none";
+    chatContainer.style.display="none";
 }
 
 let groupListStatus = {
@@ -42,7 +44,7 @@ let groupListStatus = {
 
 let groupListLoading = document.getElementById("groupListLoading");
 
-function fetch_firstPage_groupList(groupListLoading){
+async function fetch_firstPage_groupList(groupListLoading){
     groupListStatus.page=0;
     page = groupListStatus.page;
     groupListStatus.lastPage=false;
@@ -158,8 +160,9 @@ document.getElementById('sendGroupMessage-btn').addEventListener('click', functi
     let groupMemberIDs=groupRoom_manager.groupMember.map(member => member.memberID);
     if (message !== '') { 
         sendMessage_to_group(guildID,userId,userNickName, message,groupRoomId,groupMemberIDs);
-        document.getElementById('messageInput').value = '';
+        document.getElementById('groupMessageInput').value = '';
     }
+    socket.emit('updateGroupReadStatus', { roomId: groupRoomId, guildID: guildID ,userId:userId});
 });
 
 function sendMessage_to_group(guildID,userId,userNickName, message,groupRoomId,groupMemberIDs){
@@ -175,6 +178,32 @@ function sendMessage_to_group(guildID,userId,userNickName, message,groupRoomId,g
     };
     socket.emit('sendGroupMessage', data, groupRoomId);
 };
+
+document.getElementById('groupMessageInput').addEventListener('keydown', (event) => {
+    let userNickName=user_info.user_nickName;
+    let guildID=groupRoom_manager.data.guildID;
+    let userId=user_info.user_id;
+    let groupRoomId=groupRoom_manager.groupRoomId;
+    let message = document.getElementById('groupMessageInput').value;
+    let groupMemberIDs=groupRoom_manager.groupMember.map(member => member.memberID);
+
+    if (event.key === 'Enter') {
+        messageBoxStatus.enterCount++;
+        // 如果按了兩次Enter，模擬點擊發送按鈕
+        if (messageBoxStatus.enterCount=== 2) {
+            
+            if (message !== '') { 
+                sendMessage_to_group(guildID,userId,userNickName, message,groupRoomId,groupMemberIDs);
+                document.getElementById('groupMessageInput').value = '';
+            }
+            messageBoxStatus.enterCount = 0;
+        }
+    } else {
+        messageBoxStatus.enterCount = 0;
+    }
+    socket.emit('updateGroupReadStatus', { roomId: groupRoomId, guildID: guildID ,userId:userId});
+});
+
 
 socket.on('receiveGroupMessage', (data) => {
     appendGroupMessageToBox(data);
@@ -222,6 +251,7 @@ function chooseFile_to_group(){
     document.getElementById('sendFileToGroup').addEventListener('click', function(){
         document.getElementById('uploadToGroupInput').value = '';
         document.getElementById('uploadToGroupInput').click();
+        socket.emit('updateGroupReadStatus', { roomId: groupRoom_manager.groupRoomId, guildID: groupRoom_manager.data.guildID ,userId:user_info.user_id});
     });
     
     document.getElementById("uploadToGroupInput").addEventListener("change", async function() {
