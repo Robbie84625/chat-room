@@ -33,7 +33,7 @@ const setupSocketServer = (server) => {
         });
     
         socket.on('sendMessage', async(data, roomId) => {
-            // await ChatDB.insertPersonalMessage(data.requesterID, data.recipientID, data.message,data.contentType);
+            await ChatDB.insertPersonalMessage(data.requesterID, data.recipientID, data.message,data.contentType);
             io.in(roomId).emit('receiveMessage', data);
         });
 
