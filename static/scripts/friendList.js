@@ -37,7 +37,6 @@ function fetch_firstPage_friendList(friendListLoading){
     page = friendListStatus.page;
     friendListStatus.lastPage=false;
     friendListLoading.style.display="black";
-    friendAppear();
     getFriendList_from_database(page,friendListLoading);
 }
 
@@ -80,8 +79,10 @@ async function getFriendList_from_database(page,friendListLoading = null){
     }
 }
 let room_manager={
-    "roomId":"",
-    "data":{}
+    roomId:"",
+    userId:0,
+    friendId:0,
+    data:{}
 }
 
 function createFriendData(detail){
@@ -110,6 +111,7 @@ function createFriendData(detail){
     friendItemDiv.setAttribute('data-online-status', detail.onlineStatus);
 
     friendItemDiv.addEventListener('click', function() {
+        document.getElementById("firstPage").style.display='none';
         document.getElementById('friendChatRoom').style.display='block';
         document.getElementById('groupChatRoom').style.display='none';
         let onlineStatus = friendItemDiv.getAttribute('data-online-status');
@@ -121,9 +123,9 @@ function createFriendData(detail){
         let requesterID = detail.requesterID;
         let recipientID = detail.friendId;
         
-        user_info.user_id=requesterID;
-        user_info.friend_id=recipientID;
-        user_info.user_nickName=detail.requesterNickName;
+        room_manager.userId=requesterID;
+        room_manager.friendId=recipientID;
+        user_info.nickName=detail.requesterNickName;
         document.getElementById('messageBox').innerHTML='';
         document.getElementById('messageInput').value = '';
         fetch_firstPage_personalMessage();
@@ -164,17 +166,20 @@ socket.on('userOffline', (data) => {
 chooseFile_to_friend();
 
 document.getElementById('sendMessage-btn').addEventListener('click', function(){
-    let requesterID=room_manager.data.requesterID;
-    let recipientID= room_manager.data.friendId;
-    let requesterNickName=room_manager.data.requesterNickName;
-    let friendNickName=room_manager.data.friendNickName;
-    let roomId=room_manager.roomId;
-    let message = document.getElementById('messageInput').value;
+    let data={
+        roomId:room_manager.roomId,
+        requesterID:room_manager.userId,
+        recipientID: room_manager.friendId,
+        requesterNickName:room_manager.data.requesterNickName,
+        friendNickName:room_manager.data.friendNickName,
+    }
+
+    let message = document.getElementById('messageInput').value.trim();
     if (message !== '') { 
-        sendMessage_to_friend(requesterID, recipientID, requesterNickName, friendNickName, message, roomId);
+        sendMessage_to_friend(data,data.roomId,message);
         document.getElementById('messageInput').value = '';
     }
-    socket.emit('updateReadStatus', { roomId: room_manager.roomId, friendId: user_info.friend_id ,userId:user_info.user_id});
+    socket.emit('updateReadStatus', { roomId: room_manager.roomId, friendId: room_manager.friendId ,userId:room_manager.userId});
 });
 
 let messageBoxStatus={enterCount:0};
@@ -186,19 +191,23 @@ document.getElementById('messageInput').addEventListener('keydown', (event) => {
     
         // 如果按了兩次Enter，模擬點擊發送按鈕
         if (messageBoxStatus.enterCount=== 2) {
-            let requesterID=room_manager.data.requesterID;
-            let recipientID= room_manager.data.friendId;
-            let requesterNickName=room_manager.data.requesterNickName;
-            let friendNickName=room_manager.data.friendNickName;
-            let roomId=room_manager.roomId;
-            let message = document.getElementById('messageInput').value;
+            let data={
+                roomId:room_manager.roomId,
+                requesterID:room_manager.userId,
+                recipientID: room_manager.friendId,
+                requesterNickName:room_manager.data.requesterNickName,
+                friendNickName:room_manager.data.friendNickName,
+            }
+            let message = document.getElementById('messageInput').value.trim();
             if (message !== '') { 
-                sendMessage_to_friend(requesterID, recipientID, requesterNickName, friendNickName, message, roomId);
+                sendMessage_to_friend(data,data.roomId,message);
                 document.getElementById('messageInput').value = '';
             }
-            socket.emit('updateReadStatus', { roomId: room_manager.roomId, friendId: user_info.friend_id ,userId:user_info.user_id});
-            
-            messageBoxStatus.enterCount = 0;
+            else{
+                messageBoxStatus.enterCount = 0;
+                document.getElementById('groupMessageInput').value = '';
+            }
+            socket.emit('updateReadStatus', { roomId: room_manager.roomId, friendId: room_manager.friendId ,userId:room_manager.userId});
         }
     } else {
         messageBoxStatus.enterCount = 0;
@@ -221,8 +230,6 @@ function change_friendBtn_bg(){
     changeButtonColor(chatBtn);
     
 }
-let friendListLoading = document.getElementById("friendListLoading");
-fetch_firstPage_friendList(friendListLoading);
 
 const friendListDiv = document.getElementById('friendList');
 friendListDiv.addEventListener('scroll', async function() {
@@ -240,21 +247,37 @@ function show_friendDetails(friendNickName,emailPrefix,moodText,headShot,onlineS
     document.getElementById('onlineStatus').style.backgroundColor = (onlineStatus === 'online') ? 'green' : 'gray';
 }
 
-function sendMessage_to_friend(requesterID,recipientID,requesterNickName,friendNickName,message,roomId){
+function sendMessage_to_friend(data,roomId,message){
     let contentType='text';
-    let data = {
+    let myData = {
+        roomId:data.roomId,
         contentType:contentType,
-        requesterID: requesterID,
-        recipientID: recipientID,
-        requesterNickName: requesterNickName,
-        friendNickName: friendNickName,
+        requesterID: data.requesterID,
+        recipientID: data.recipientID,
+        requesterNickName: data.requesterNickName,
+        friendNickName: data.friendNickName,
+        email:user_info.email,
+        moodText:user_info.moodText,
+        headshot:user_info.headshot,
+        onlineStatus:user_info.onlineStatus,
         message: message
     };
-    
-    socket.emit('sendMessage', data, roomId);
+    socket.emit('sendMessage', myData, roomId);
     const memberReceiveId = `m${recipientID}`;
-    socket.emit('getMessage', data, memberReceiveId);
+    socket.emit('sendMessageToFriend', myData, memberReceiveId);
+    updateChatList(myData)
 };
+
+function updateChatList(myData){
+    let friendDivId = `f_${myData.recipientID}`;
+    let chatListDiv = document.getElementById('chatList');
+    // 尋找並移除現有的 div
+    let existingDiv = chatListDiv.querySelector(`div[data-friend-id="${friendDivId}"]`);
+    if (existingDiv) {
+        chatListDiv.removeChild(existingDiv);
+    }
+    sendNewChatData(myData);
+}
 
 socket.on('receiveMessage', (data) => {
     appendMessageToBox(data);
@@ -281,7 +304,7 @@ function appendMessageToBox(messageData) {
 
     const readStatusElement = messageItem.querySelector(".read-status");
 
-    if (messageData.requesterID === user_info.user_id) {
+    if (messageData.requesterID === user_info.memberId) {
         readStatusElement.style.display = 'block';
         readStatusElement.textContent = '未讀';
     } else {
@@ -289,15 +312,14 @@ function appendMessageToBox(messageData) {
     }
 
     const messageContent = messageItem.querySelector('.messageBox__item__content');
-
-    if (user_info.user_id !== messageData.requesterID) {
+    if (user_info.memberId !== messageData.requesterID) {
         messageContent.style.backgroundColor = '#ccffcc';
     } else {
         messageContent.style.backgroundColor = '#E0F7FA';
     }
 
     messageBox.appendChild(messageItem);
-    if (user_info.user_id === messageData.requesterID) {
+    if (user_info.memberId === messageData.requesterID) {
         messageScroll();
     }
 }
@@ -307,7 +329,8 @@ function chooseFile_to_friend(){
     document.getElementById('sendFileToFriend').addEventListener('click', function(){
         document.getElementById('uploadToFriendInput').value = '';
         document.getElementById('uploadToFriendInput').click();
-        socket.emit('updateReadStatus', { roomId: room_manager.roomId, friendId: user_info.friend_id ,userId:user_info.user_id});
+
+        socket.emit('updateReadStatus', { roomId: room_manager.roomId, friendId:room_manager.friendId,userId:room_manager.userId});
     });
     
     document.getElementById("uploadToFriendInput").addEventListener("change", async function() {
@@ -330,17 +353,20 @@ function chooseFile_to_friend(){
         }
         document.getElementById('uploadFileLoading').style.display='flex';
         toFriendFile = this.files[0];
-        let requesterID=room_manager.data.requesterID;
-        let recipientID= room_manager.data.friendId;
-        let requesterNickName=room_manager.data.requesterNickName;
-        let friendNickName=room_manager.data.friendNickName;
-        let roomId=room_manager.roomId;
+        let data={
+            roomId:room_manager.roomId,
+            requesterID:room_manager.userId,
+            recipientID: room_manager.friendId,
+            requesterNickName:room_manager.data.requesterNickName,
+            friendNickName:room_manager.data.friendNickName,
+        }
         const formData = new FormData();
         formData.append('file', toFriendFile);
         fileData = await uploadFile_to_friend(formData);
         fileDataUrl = fileData.url;
         fileType = fileData.fileType.split('/')[0];
-        sendFile_to_friend(requesterID, recipientID, requesterNickName, friendNickName, fileDataUrl,fileType, roomId);
+        sendFile_to_friend(data,data.roomId,fileType,fileDataUrl);
+        console.log(data,data.roomId,fileType,fileDataUrl)
     });
 }
 
@@ -359,19 +385,26 @@ async function uploadFile_to_friend(formData){
     return data['updateParams'];
     
 }
-
-function sendFile_to_friend(requesterID, recipientID, requesterNickName, friendNickName, fileDataUrl,fileType, roomId){
+function sendFile_to_friend(data,roomId,fileType,fileDataUrl){
     let contentType=fileType;
-    let data = {
+    let myData = {
+        roomId:data.roomId,
         contentType:contentType,
-        requesterID: requesterID,
-        recipientID: recipientID,
-        requesterNickName: requesterNickName,
-        friendNickName: friendNickName,
+        requesterID: data.requesterID,
+        recipientID: data.recipientID,
+        requesterNickName: data.requesterNickName,
+        friendNickName: data.friendNickName,
+        email:user_info.email,
+        moodText:user_info.moodText,
+        headshot:user_info.headshot,
+        onlineStatus:user_info.onlineStatus,
         message:fileDataUrl
     };
     
-    socket.emit('sendFile', data, roomId);
+    socket.emit('sendFile', myData, roomId);
+    const memberReceiveId = `m${recipientID}`;
+    socket.emit('sendMessageToFriend', myData, memberReceiveId);
+    updateChatList(myData);
 };
 
 socket.on('receiveFile', (data) => {
@@ -407,7 +440,7 @@ function appendFileToBox(messageData) {
 
     const readStatusElement = messageItem.querySelector(".read-status");
 
-    if (messageData.requesterID === user_info.user_id) {
+    if (messageData.requesterID === user_info.memberId) {
         readStatusElement.style.display = 'block';
         readStatusElement.textContent = '未讀';
     } else {
@@ -418,7 +451,7 @@ function appendFileToBox(messageData) {
 
     document.getElementById('uploadFileLoading').style.display='none';
 
-    if (user_info.user_id === messageData.requesterID) {
+    if (user_info.memberId === messageData.requesterID) {
         messageScroll();
     }
 }
@@ -464,13 +497,14 @@ async function getPersonalMessage__from__database(requesterID,recipientID,page){
         messageStatus.lastPage = true;
     }
 }
+
 function fetch_firstPage_personalMessage(){
     messageStatus.page=0;
     page =  messageStatus.page;
     messageStatus.lastPage=false;
     
-    requesterID=user_info.user_id;
-    recipientID=user_info.friend_id;
+    requesterID=room_manager.userId;
+    recipientID=room_manager.friendId;
     getPersonalMessage__from__database(requesterID,recipientID,page);
 
 }
@@ -496,7 +530,7 @@ function loadHistoryMsgToBox(message) {
     messageItem.classList.add('messageBox__item');
     
     let readStatus = '';
-    if (user_info.user_nickName === message.requesterNickName) {
+    if (user_info.nickName=== message.requesterNickName) {
         readStatus = message.readStatus === 0 ? '未讀' : '已讀';
     } else {
         readStatus = ' ';
@@ -510,9 +544,10 @@ function loadHistoryMsgToBox(message) {
             <div>${dateTime}</div>
         </div>
     `;
+
     const messageContent = messageItem.querySelector('.messageBox__item__content');
     if(messageContent){
-        messageContent.style.backgroundColor = user_info.user_nickName !== message.requesterNickName ? '#ccffcc' : '#E0F7FA';
+        messageContent.style.backgroundColor = user_info.nickName !== message.requesterNickName ? '#ccffcc' : '#E0F7FA';
     }
 
     if (messageBox.firstChild) {
@@ -534,13 +569,12 @@ function toTaiwanTime(dateTime) {
     return taiwanTime;
 }
 
-
 // 監聽訊息欄位滾動事件
 messageBox.addEventListener('scroll', function () {
     if (messageBox.scrollTop === 0) {
-        let page=messageStatus.page
-        let requesterID=user_info.user_id;
-        let recipientID=user_info.friend_id;
+        let page=messageStatus.page;
+        let requesterID=room_manager.userId;
+        let recipientID=room_manager.friendId;
         getPersonalMessage__from__database(requesterID,recipientID,page);
     }
 });
@@ -575,3 +609,55 @@ document.getElementById('personalEmoji').addEventListener('click', function(even
 
     event.stopPropagation();
 });
+
+function sendNewChatData(myData){
+    let chatItemDiv = document.createElement('div');
+    chatItemDiv.className = 'chatList__item';
+    chatItemDiv.onlineStatus = room_manager.data.friendOnlineStatus;
+    
+    chatItemDiv.innerHTML=
+        `<img class="chatList__item__avatar"/>
+        <div>
+            <div class="chatList__item__name"></div>
+            <div class="chatList__item__message"></div>
+        </div>`;
+    let name = chatItemDiv.querySelector('.chatList__item__name');
+    let message = chatItemDiv.querySelector('.chatList__item__message');
+    let avatar = chatItemDiv.querySelector('.chatList__item__avatar');
+    name.textContent = room_manager.data.friendNickName;
+    let Avatar;
+    Avatar =room_manager.data.friendAvatar|| "/images/head-shot-default.png";
+
+    avatar.src = Avatar;
+    if (myData.contentType === 'text') {
+        message.textContent = `你:${myData.message}`;
+    } else if (myData.contentType === 'image') {
+        message.textContent = '你:發送一個圖片';
+    } else if (myData.contentType=== 'video') {
+        myData.message.textContent = '你:發送一個影片';
+    }
+
+    let chatListDiv = document.getElementById('chatList');
+    let recipientID = room_manager.friendId;
+
+    
+    chatItemDiv.setAttribute('data-friend-id', `f_${recipientID}`);
+    chatItemDiv.setAttribute('data-online-status', onlineStatus);
+    
+    if (chatListDiv.firstChild) {
+        chatListDiv.insertBefore(chatItemDiv, chatListDiv.firstChild);
+    } else {
+        chatListDiv.appendChild(chatItemDiv);
+    }
+    
+
+    let emailIcon;
+    if (myData.roomId!==room_manager.roomId) {
+        emailIcon = document.createElement('div');
+        emailIcon.className = "chatList__item__emailIcon";
+        chatItemDiv.appendChild(emailIcon); 
+        message.style.color='black';
+    }
+
+    socket.emit('joinRoom', myData.roomId);
+}

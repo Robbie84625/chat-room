@@ -81,7 +81,7 @@
     display: none;
 }
 .friendList__item:hover{
-    background-color: #E6E6FA; 
+    background: #C1FFC1;
 }
 
 .chatRoom__statusBar{

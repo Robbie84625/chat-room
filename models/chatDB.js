@@ -114,14 +114,13 @@ class ChatDB {
     async findAllMessage(userId,page){
         const queryMySQL = `
         SELECT * FROM (
-            -- 个人消息部分
             SELECT 
                 CASE 
                     WHEN nm.requesterID = ? THEN m2.nickName 
                     ELSE m1.nickName 
                 END AS name,
                 CASE 
-                    WHEN nm.requesterID = 1 THEN m1.nickName
+                    WHEN nm.requesterID = ? THEN m1.nickName
                     ELSE m2.nickName 
                 END AS otherNickName,
                 CASE 
@@ -136,14 +135,24 @@ class ChatDB {
                 nm.dateTime AS dateTime,
                 nm.readStatus,
                 CASE 
-                    WHEN nm.requesterID = ? THEN ? 
+                    WHEN nm.requesterID = ? THEN 1 
                     ELSE 0 
-                END AS isMe,
-                0 AS isGroup,  -- 个人消息标记为 0
-                m1.onlineStatus,  -- 来自member表
-                m1.moodText,      -- 来自member表
-                m1.email,
-                NULL AS senderNickName  -- 个人消息没有senderNickName
+                    END AS isMe,
+                0 AS isGroup,  
+                CASE
+                    WHEN nm.requesterID = ? THEN m2.onlineStatus 
+                    ELSE m1.onlineStatus 
+                    END AS onlineStatus,  
+                    CASE 
+                WHEN nm.requesterID = ? THEN m2.moodText
+                    ELSE m1.moodText
+                END AS moodText,
+                
+                CASE 
+                    WHEN nm.requesterID = ? THEN m2.email
+                    ELSE m1.email
+                END AS email,
+                NULL AS senderNickName  
             FROM (
                 SELECT
                     messageID, requesterID, recipientID, content, contentType, dateTime, readStatus,
@@ -158,11 +167,10 @@ class ChatDB {
             ) AS nm
             LEFT JOIN member AS m1 ON nm.requesterID = m1.memberID
             LEFT JOIN member AS m2 ON nm.recipientID = m2.memberID
-            WHERE nm.rn = ?
+            WHERE nm.rn = 1
         
             UNION ALL
         
-            -- 群组消息部分
             SELECT 
                 g.guildName AS name,
                 NULL AS otherNickName,
@@ -175,14 +183,14 @@ class ChatDB {
                 gm.timestamp AS dateTime,
                 gmrs.isRead AS readStatus,
                 CASE 
-                    WHEN gm.senderID = ? THEN ? 
+                    WHEN gm.senderID = ? THEN 1
                     ELSE 0 
                 END AS isMe,
-                1 AS isGroup,  -- 群组消息标记为 1
-                NULL AS onlineStatus,  -- 群组消息没有 onlineStatus
-                NULL AS moodText,      -- 群组消息没有 moodText
+                1 AS isGroup,  
+                NULL AS onlineStatus, 
+                NULL AS moodText,      
                 NULL AS email,
-                m.nickName AS senderNickName  -- 群组消息中senderId对应的nickName
+                m.nickName AS senderNickName  
             FROM 
                 guild_messages gm
             JOIN 
@@ -190,7 +198,7 @@ class ChatDB {
             JOIN 
                 guild g ON gm.guildID = g.guildID
             JOIN 
-                member m ON gm.senderID = m.memberID  -- 与member表连接以获取nickName
+                member m ON gm.senderID = m.memberID  
             WHERE 
                 gmrs.memberID = ?
             AND 
@@ -208,7 +216,7 @@ class ChatDB {
         ORDER BY dateTime DESC
         LIMIT ?, ?;
         `;
-        values = [userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,page*10,11];
+        values = [userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,page*10,11];
         try {
             const queryResults = await pool.query(queryMySQL, values);
             result = queryResults[0]

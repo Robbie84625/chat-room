@@ -24,6 +24,10 @@ const setupSocketServer = (server) => {
     });
 
     io.on('connection', (socket) => {
+        socket.on('myChannel', (channelId) => {
+            socket.join(channelId);
+        });
+
         socket.on('joinRoom', (roomId) => {
             socket.join(roomId);
         });
@@ -37,18 +41,22 @@ const setupSocketServer = (server) => {
             io.in(roomId).emit('receiveMessage', data);
         });
 
-        socket.on('getMessage', async(data, memberReceiveId) => {
-            console.log(data, memberReceiveId)
-        });
-
         socket.on('sendFile', async(data, roomId) => {
             await ChatDB.insertPersonalMessage(data.requesterID, data.recipientID, data.message,data.contentType);
             io.in(roomId).emit('receiveFile', data);
         });
 
+        socket.on('sendMessageToFriend', async(data, memberReceiveId) => {
+            io.in(memberReceiveId).emit('receiveFriendMessage', data);
+        });
+
         socket.on('sendGroupMessage', async(data, groupRoomId) => {
-            await ChatDB.insertGroupMessage(data.guildID,data.userId,data.message,data.groupMember,data.contentType);
+            // await ChatDB.insertGroupMessage(data.guildID,data.userId,data.message,data.groupMember,data.contentType);
             io.in(groupRoomId).emit('receiveGroupMessage', data)
+        });
+
+        socket.on('sendMessageToGroup', async(data, memberReceiveId) => {
+            io.in(memberReceiveId).emit('receiveFromGroup', data);
         });
 
         socket.on('sendGroupFile', async(data, roomId) => {
@@ -56,7 +64,6 @@ const setupSocketServer = (server) => {
             io.in(roomId).emit('receiveGroupFile', data);
         });
 
-        //socket io設定
         socket.on('updateReadStatus', async (data) => {
             const { roomId, friendId,userId} = data;
             if (roomId && friendId) {

@@ -279,3 +279,11 @@ body{
     border-radius: 50%;
     background-color: blue;
 }
+
+#chatContainer{
+    display: none;
+}
+
+.chatList__item:hover{
+    background: #C1FFC1;
+}

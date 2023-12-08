@@ -1,35 +1,14 @@
 async function fetchMemberData() {
-    try {
-        if (!token) {
-            return;
-        }
-        const headers = {
-            'Authorization': `Bearer ${token}`
-        };
-
-        let loading__userInfo = document.getElementById("loadingUserInfo");
-        loading__userInfo .style.display='block';
-
-        const response = await fetch('/getMemberData', { headers });
-        
-        const userData = await response.json();
-        if (response.ok) {
-            loading__userInfo .style.display='none';
-
-            myHeadShot = userData.headshot === null ? 'images/head-shot-default.png' : userData.headshot;
-            myNickName=userData.nickName;
-            myName=userData.name;
-            myMoodText= userData.moodText === null ? '心情小語' : userData.moodText;
-            
-            create_user_information(myHeadShot,myNickName, myName,myMoodText)
-            
-
-        } else {
-            console.error('無法獲取資料');
-        }
-    } catch (error) {
-        console.error('發生錯誤：', error);
+    if (!token) {
+        return;
     }
+
+    myHeadShot = user_info.headshot === null ? 'images/head-shot-default.png' : user_info.headshot;
+    myNickName=user_info.nickName;
+    myName=user_info.name;
+    myMoodText= user_info.moodText === null ? '心情小語' : user_info.moodText;
+        
+    create_user_information(myHeadShot,myNickName, myName,myMoodText);
 }
 
 
@@ -56,12 +35,14 @@ let userInfo_oldValue = {
     oldMoodText: "",
     oldNickName: ""
 };
+
+
 function control_userInfo(){
     document.getElementById('headShotContainer').addEventListener('click', function () {
         document.getElementById('headShotInput').click();
     });
-    
     document.getElementById("headShotInput").addEventListener("change", function() {
+        const headShotFile = this.files[0];
         if (this.files && this.files[0]) {
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
             if (!validTypes.includes(this.files[0].type)) {
@@ -69,7 +50,6 @@ function control_userInfo(){
                 return;
             }
         }
-        const headShotFile = this.files[0];
         if (headShotFile) {        
             const reader = new FileReader();
     
@@ -134,6 +114,18 @@ async function upload_userInfo(formData){
         loading__userInfoStatus.style.display="none";
         userInfoStatus.style.display="block";
         userInfoStatus.innerHTML=data.message;
+
+        if (data.updateParams.headShot !== undefined) {
+            user_info.headshot = data.updateParams.headShot;
+        }
+        
+        if (data.updateParams.moodText !== undefined) {
+            user_info.moodText = data.updateParams.moodText;
+        }
+        
+        if (data.updateParams.nickName !== undefined) {
+            user_info.nickName = data.updateParams.nickName;
+        }
     }
     else{
         loading__userInfoStatus.style.display="none";
@@ -190,38 +182,41 @@ function setupMoodTextEditing(moodTextDiv, editIcon) {
 
 function create_user_information(myHeadShot,myNickName, myName,myMoodText){
     let userInfo__container= document.getElementById("userInfo__container");
-    let headShotImage = new Image();
-    headShotImage.src = myHeadShot;
-    headShotImage.onload = function() {
-        
-        userInfo__container.innerHTML=`
-            <div class="userInfo__headShotContainer" id="headShotContainer">
-                <img alt="head shot" class="userInfo__headShotContainer__img" id="myHeadShot"/>
-                <img src="images/image-editing.png" alt="image editing" class="userInfo__headShotContainer__editIcon" />
-            </div>
-            <input type="file" name="file" id="headShotInput" style="display:none">
-            <div class="userInfo__nickNameContainer">
-                <div class="userInfo__nickNameContainer__nickName" id="myNickName"></div>
-                <img src="images/edit.svg" alt="edit mood text icon" class="userInfo__nickNameContainer__editIcon" id="userInfo__nickNameContainer__editIcon"/>
-            </div>
-            <div class="userInfo__container__name" id='myName'></div>
-            <div class="userInfo__moodTextContainer">
-                <div class="userInfo__moodTextContainer__moodText" id="myMoodText"></div>
-                <img src="images/edit.svg" alt="edit mood text icon" class="userInfo__moodTextContainer__editIcon" id="userInfo__moodTextContainer__editIcon"/>
-            </div>
-            <img src="images/update.png" alt="update icon" class="userInfo__updateIcon" id="userInfoUpdate"/>
-            <img src="images/checkBuffer.gif" alt="loading status" class="loading__userInfoStatus" id="loading__userInfoStatus"/>
-            <div class="userInfo__status" id="userInfoStatus"></div>
-            `;
-        let myHeadShotDiv=document.getElementById('myHeadShot');
+
+    userInfo__container.innerHTML=`
+        <div class="userInfo__headShotContainer" id="headShotContainer">
+            <img alt="head shot" class="userInfo__headShotContainer__img" id="myHeadShot"/>
+            <img src="images/image-editing.png" alt="image editing" class="userInfo__headShotContainer__editIcon" />
+        </div>
+        <input type="file" name="file" id="headShotInput" style="display:none">
+        <div class="userInfo__nickNameContainer">
+            <div class="userInfo__nickNameContainer__nickName" id="myNickName"></div>
+            <img src="images/edit.svg" alt="edit mood text icon" class="userInfo__nickNameContainer__editIcon" id="userInfo__nickNameContainer__editIcon"/>
+        </div>
+        <div class="userInfo__container__name" id='myName'></div>
+        <div class="userInfo__moodTextContainer">
+            <div class="userInfo__moodTextContainer__moodText" id="myMoodText"></div>
+            <img src="images/edit.svg" alt="edit mood text icon" class="userInfo__moodTextContainer__editIcon" id="userInfo__moodTextContainer__editIcon"/>
+        </div>
+        <img src="images/update.png" alt="update icon" class="userInfo__updateIcon" id="userInfoUpdate"/>
+        <img src="images/checkBuffer.gif" alt="loading status" class="loading__userInfoStatus" id="loading__userInfoStatus"/>
+        <div class="userInfo__status" id="userInfoStatus"></div>
+        `;
+    let myHeadShotDiv=document.getElementById('myHeadShot');
+    myHeadShotDiv.src='images/fileLoading.gif';
+    let preloadImage = new Image();
+    preloadImage.onload = function() {
         myHeadShotDiv.src=myHeadShot;
-        let myNickNameDiv=document.getElementById('myNickName');
-        myNickNameDiv.textContent=myNickName;
-        let myNameDiv=document.getElementById('myName');
-        myNameDiv.textContent=myName;
-        let myMoodTextDiv=document.getElementById('myMoodText');
-        myMoodTextDiv.textContent=myMoodText;
-        control_userInfo();
-    }
+    };
+    preloadImage.src = myHeadShot;
+    
+    let myNickNameDiv=document.getElementById('myNickName');
+    myNickNameDiv.textContent=myNickName;
+    let myNameDiv=document.getElementById('myName');
+    myNameDiv.textContent=myName;
+    let myMoodTextDiv=document.getElementById('myMoodText');
+    myMoodTextDiv.textContent=myMoodText;
+    control_userInfo();
+    
 }
 

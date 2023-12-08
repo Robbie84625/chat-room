@@ -49,7 +49,6 @@ async function fetch_firstPage_groupList(groupListLoading){
     page = groupListStatus.page;
     groupListStatus.lastPage=false;
     groupListLoading.style.display="black";
-    groupListAppear();
     getGroupList_from_database(page,groupListLoading);
 }
 
@@ -80,8 +79,8 @@ async function getGroupList_from_database(page,groupListLoading = null){
         } else {
             groupListStatus.lastPage = true; 
         }
-        user_info.user_nickName=data.userInfo.userNickName;
-        user_info.user_id=data.userInfo.userId;
+        user_info.nickName=data.userInfo.userNickName;
+        user_info.memberId=data.userInfo.userId;
         for(let detail of data['data']){
             createGroupData(detail);
         }
@@ -116,7 +115,9 @@ function createGroupData(detail){
 
     let groupListDiv = document.getElementById('groupList');
     groupListDiv.appendChild(groupItemDiv);
+
     groupItemDiv.addEventListener('click',async function() {
+        document.getElementById("firstPage").style.display='none';
         document.getElementById('friendChatRoom').style.display='none';
         document.getElementById('groupChatRoom').style.display='block';
         document.getElementById('groupName').textContent=detail.guildName;
@@ -124,7 +125,7 @@ function createGroupData(detail){
         document.getElementById('groupMessageBox').innerHTML='';
         document.getElementById('groupMessageInput').value='';
         groupMember=await get_groupMember(detail.guildID);
-        fetch_firstPage_groupMessage(detail.guildID,user_info.user_id);
+        fetch_firstPage_groupMessage(detail.guildID,user_info.memberId);
         //根據群組id來生成Room id
         let groupRoomId = `g${detail.guildID}`;
         groupRoom_manager.groupRoomId=groupRoomId;
@@ -152,11 +153,11 @@ async function get_groupMember(guildID){
 }
 
 document.getElementById('sendGroupMessage-btn').addEventListener('click', function(){
-    let userNickName=user_info.user_nickName;
+    let userNickName=user_info.nickName;
     let guildID=groupRoom_manager.data.guildID;
-    let userId=user_info.user_id;
+    let userId=user_info.memberId;
     let groupRoomId=groupRoom_manager.groupRoomId;
-    let message = document.getElementById('groupMessageInput').value;
+    let message = document.getElementById('groupMessageInput').value.trim();
     let groupMemberIDs=groupRoom_manager.groupMember.map(member => member.memberID);
     if (message !== '') { 
         sendMessage_to_group(guildID,userId,userNickName, message,groupRoomId,groupMemberIDs);
@@ -176,27 +177,106 @@ function sendMessage_to_group(guildID,userId,userNickName, message,groupRoomId,g
         message:message,
         groupRoomId:groupRoomId
     };
+    
+    let socketData = {
+        contentType:contentType,
+        requesterID: userId,
+        guildID:guildID,
+        groupMember:groupRoom_manager.groupMember,
+        requesterNickName: userNickName,
+        guildName: groupRoom_manager.data.guildName,
+        guildAvatar:groupRoom_manager.data.guildAvatar,
+        message: message,
+        groupRoomId:groupRoomId
+    };
     socket.emit('sendGroupMessage', data, groupRoomId);
+    for(let member of groupRoom_manager.groupMember){
+        const memberReceiveId = `m${member.memberID}`;
+        if(memberReceiveId !==`m${userId}`){
+            socket.emit('sendMessageToGroup', socketData, memberReceiveId);
+        }
+    }
+    updateGroupChatList(socketData);
 };
 
-document.getElementById('groupMessageInput').addEventListener('keydown', (event) => {
-    let userNickName=user_info.user_nickName;
-    let guildID=groupRoom_manager.data.guildID;
-    let userId=user_info.user_id;
-    let groupRoomId=groupRoom_manager.groupRoomId;
-    let message = document.getElementById('groupMessageInput').value;
-    let groupMemberIDs=groupRoom_manager.groupMember.map(member => member.memberID);
+function updateGroupChatList(socketData){
+    let groupDivId = `g_${socketData.guildID}`;
+    let chatListDiv = document.getElementById('chatList');
+    let existingDiv = chatListDiv.querySelector(`div[data-group-id="${groupDivId}"]`);
+    if (existingDiv) {
+        chatListDiv.removeChild(existingDiv);
+    }
+    sendNewGroupChatData(socketData);
+}
 
+function sendNewGroupChatData(socketData){
+    let chatItemDiv = document.createElement('div');
+    chatItemDiv.className = 'chatList__item';
+    
+    chatItemDiv.innerHTML=
+        `<img class="chatList__item__avatar"/>
+        <div>
+            <div class="chatList__item__name"></div>
+            <div class="chatList__item__message"></div>
+        </div>`;
+    let name = chatItemDiv.querySelector('.chatList__item__name');
+    let message = chatItemDiv.querySelector('.chatList__item__message');
+    let avatar = chatItemDiv.querySelector('.chatList__item__avatar');
+    
+    name.textContent = socketData.guildName;
+    let Avatar;
+    Avatar = socketData.guildAvatar||"/images/group.png";
+
+    avatar.src = Avatar;
+    if (socketData.contentType === 'text') {
+        message.textContent = `你:${socketData.message}`;
+    } else if (socketData.contentType === 'image') {
+        message.textContent = '你:發送一個圖片';
+    } else if (socketData.contentType=== 'video') {
+        socketData.message.textContent = '你:發送一個影片';
+    }
+
+    let chatListDiv = document.getElementById('chatList');
+    let guildID = socketData.guildID;
+    
+    chatItemDiv.setAttribute('data-group-id',`g_${guildID}`);
+    
+    if (chatListDiv.firstChild) {
+        chatListDiv.insertBefore(chatItemDiv, chatListDiv.firstChild);
+    } else {
+        chatListDiv.appendChild(chatItemDiv);
+    }
+    
+    let emailIcon;
+    if (socketData.groupRoomId!==groupRoom_manager.groupRoomId) {
+        emailIcon = document.createElement('div');
+        emailIcon.className = "chatList__item__emailIcon";
+        chatItemDiv.appendChild(emailIcon); 
+        message.style.color='black';
+    }
+
+    socket.emit('joinRoom', socketData.groupRoomId);
+}
+
+document.getElementById('groupMessageInput').addEventListener('keydown', (event) => {
+    let userNickName=user_info.nickName;
+    let guildID=groupRoom_manager.data.guildID;
+    let userId=user_info.memberId;
+    let groupRoomId=groupRoom_manager.groupRoomId;
+    let message = document.getElementById('groupMessageInput').value.trim();
+    let groupMemberIDs=groupRoom_manager.groupMember.map(member => member.memberID);
     if (event.key === 'Enter') {
         messageBoxStatus.enterCount++;
         // 如果按了兩次Enter，模擬點擊發送按鈕
         if (messageBoxStatus.enterCount=== 2) {
-            
             if (message !== '') { 
                 sendMessage_to_group(guildID,userId,userNickName, message,groupRoomId,groupMemberIDs);
                 document.getElementById('groupMessageInput').value = '';
             }
-            messageBoxStatus.enterCount = 0;
+            else{
+                messageBoxStatus.enterCount = 0;
+                document.getElementById('groupMessageInput').value = '';
+            }
         }
     } else {
         messageBoxStatus.enterCount = 0;
@@ -230,14 +310,14 @@ function appendGroupMessageToBox(messageData) {
 
     const messageContent = messageItem.querySelector('.messageBox__item__content');
 
-    if (user_info.user_id !== messageData.userId) {
+    if (user_info.memberId!== messageData.userId) {
         messageContent.style.backgroundColor = '#ccffcc';
     } else {
         messageContent.style.backgroundColor = '#E0F7FA';
     }
 
     messageBox.appendChild(messageItem);
-    if (user_info.user_id === messageData.userId) {
+    if (user_info.memberId === messageData.userId) {
         groupMessageScroll(messageBox);
     }
 }
@@ -251,7 +331,7 @@ function chooseFile_to_group(){
     document.getElementById('sendFileToGroup').addEventListener('click', function(){
         document.getElementById('uploadToGroupInput').value = '';
         document.getElementById('uploadToGroupInput').click();
-        socket.emit('updateGroupReadStatus', { roomId: groupRoom_manager.groupRoomId, guildID: groupRoom_manager.data.guildID ,userId:user_info.user_id});
+        socket.emit('updateGroupReadStatus', { roomId: groupRoom_manager.groupRoomId, guildID: groupRoom_manager.data.guildID ,userId:user_info.memberId});
     });
     
     document.getElementById("uploadToGroupInput").addEventListener("change", async function() {
@@ -274,9 +354,9 @@ function chooseFile_to_group(){
         }
         document.getElementById('uploadGroupFileLoading').style.display='flex';
         toGroupFile = this.files[0];
-        let userNickName=user_info.user_nickName;
+        let userNickName=user_info.nickName;
         let guildID=groupRoom_manager.data.guildID;
-        let userId=user_info.user_id;
+        let userId=user_info.memberId;
         let groupRoomId=groupRoom_manager.groupRoomId;
         let groupMemberIDs=groupRoom_manager.groupMember.map(member => member.memberID);
         const formData = new FormData();
@@ -316,7 +396,25 @@ function sendFile_to_group(guildID,userId,userNickName,fileDataUrl,fileType,grou
         groupRoomId:groupRoomId
     };
     
+    let socketData = {
+        contentType:contentType,
+        requesterID: userId,
+        guildID:guildID,
+        groupMember:groupRoom_manager.groupMember,
+        requesterNickName: userNickName,
+        guildName: groupRoom_manager.data.guildName,
+        guildAvatar:groupRoom_manager.data.guildAvatar,
+        message: fileDataUrl,
+        groupRoomId:groupRoomId
+    };
     socket.emit('sendGroupFile', data, groupRoomId);
+    for(let member of groupRoom_manager.groupMember){
+        const memberReceiveId = `m${member.memberID}`;
+        if(memberReceiveId !==`m${userId}`){
+            socket.emit('sendMessageToGroup', socketData, memberReceiveId);
+        }
+    }
+    updateGroupChatList(socketData);
 };
 
 socket.on('receiveGroupFile', (data) => {
@@ -354,7 +452,7 @@ function appendGroupFileToBox(messageData) {
 
     document.getElementById('uploadGroupFileLoading').style.display='none';
 
-    if (user_info.user_id === messageData.requesterID) {
+    if (user_info.memberId === messageData.requesterID) {
         messageScroll();
     }
 }
@@ -442,9 +540,10 @@ function loadGroupMsgToBox(message) {
             <div>${dateTime}</div>
         </div>
     `;
+
     const messageContent = messageItem.querySelector('.messageBox__item__content');
     if(messageContent){
-        messageContent.style.backgroundColor = user_info.user_nickName !== message.senderNickName ? '#ccffcc' : '#E0F7FA';
+        messageContent.style.backgroundColor = user_info.nickName !== message.senderNickName ? '#ccffcc' : '#E0F7FA';
     }
     if (groupMessageBox.firstChild) {
         groupMessageBox.insertBefore(messageItem, groupMessageBox.firstChild);
@@ -456,7 +555,7 @@ let groupMessageBox = document.getElementById('groupMessageBox');
 groupMessageBox.addEventListener('scroll', function () {
     if (groupMessageBox.scrollTop === 0) {
         let page=groupMessageStatus.page;
-        let userID=user_info.user_id;
+        let userID=user_info.memberId;
         let guildID=groupRoom_manager.data.guildID;
         getGroupMessage__from__database(guildID,userID,page)
     }

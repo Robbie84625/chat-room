@@ -82,7 +82,10 @@ router.post('/uploadUserInfo', upload.single('file'), async (req, res) => {
         }
         await UserInfoDB.updateUserInfo(updateParams);
 
-        return res.status(200).json({ message: "更新成功"});
+        return res.status(200).json({ 
+            message: "更新成功",
+            updateParams: updateParams
+        });
     }catch (err) {
         console.error("更新失敗", err);
         return res.status(500).json({ message: "更新失敗" });

@@ -184,7 +184,7 @@
 }
 
 .groupList__item:hover{
-    background-color: #E6E6FA; 
+    background: #C1FFC1;
 }
 #groupList{
     height: calc(100vh - 250px);

@@ -1,10 +1,6 @@
 let checkToken =localStorage.getItem('token');
 
-let user_info={
-    "user_id":0,
-    "friend_id":0,
-    "user_nickName":''
-}
+let user_info={};
 
 async function checkTokenExist() {
     let token = localStorage.getItem('token');
@@ -42,24 +38,25 @@ function changeButtonColor(button) {
 }
 
 const socket = io('https://chat-room.robbieliu.com');
+// const socket = io('http://127.0.0.1:4000');
 
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token'); 
-
     if (token) {
         try {
-            const response = await fetch('/userOnlineStatus', {
-                method: 'POST',
+            const response = await fetch('/getMemberData', {
+                method: 'GET',
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
                     'Authorization': `Bearer ${token}`
                 }
             });
-
-            const data = await response.json();
-            if (data.status === 'success') {
-                user_info.user_id=data.memberId;
-                socket.emit('login', { memberId: data.memberId });
+            if (response.ok) {
+                const data = await response.json();
+                user_info = data;
+                socket.emit('login', { memberId: user_info.memberId});
+                const MyChannelId = `m${user_info.memberId}`;
+                socket.emit('myChannel',MyChannelId);
             } 
         } catch (error) {
             console.error('Error verifying token:', error);
@@ -78,7 +75,7 @@ async function changeOnlineStatus(){
         });
         const data = await response.json();
         if (response.ok) {
-            socket.emit('preDisconnect', { memberId: data.userId });
+            socket.emit('preDisconnect', { memberId: data.userId});
         } else {
             return false;
         }
@@ -103,6 +100,3 @@ document.querySelectorAll('.emojiBox p').forEach(function(p) {
     });
 });
 
-socket.on('getMessage', (message) => {
-    // 處理接收到的消息
-});

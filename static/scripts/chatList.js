@@ -49,8 +49,9 @@ function fetch_firstPage_chatList(chatListLoading){
     chatListLoading.style.display="black";
     chatListAppear();
     getChatList_from_database(page,chatListLoading);
-}
+}isplay='none';
 let chatListLoading= document.getElementById("chatListLoading");
+fetch_firstPage_chatList(chatListLoading);
 
 async function getChatList_from_database(page,chatListLoading = null){
     if (chatListLoading) {
@@ -104,7 +105,6 @@ function createChatData(detail){
     let name = chatItemDiv.querySelector('.chatList__item__name');
     let message = chatItemDiv.querySelector('.chatList__item__message');
     let avatar = chatItemDiv.querySelector('.chatList__item__avatar');
-    
     name.textContent = detail.name;
     let Avatar;
     if(detail.isGroup===1){
@@ -115,7 +115,6 @@ function createChatData(detail){
     }
 
     avatar.src = Avatar;
-
     if (detail.contentType === 'text') {
         if (detail.isMe === 1) {
             message.textContent = `你:${detail.content}`;
@@ -141,15 +140,16 @@ function createChatData(detail){
         chatItemDiv.appendChild(emailIcon); 
         message.style.color='black';
     }
-    if (detail.isMe === 1 && detail.isGroup === 0) {
-        chatListDiv.setAttribute('data-friend-id', `f_${detail.recipientID}`);
-        chatListDiv.setAttribute('data-online-status', detail.onlineStatus);
-    } else if (detail.isMe === 0 && detail.isGroup === 0) {
-        chatListDiv.setAttribute('data-friend-id', `f_${detail.requesterID}`);
-        chatListDiv.setAttribute('data-online-status', detail.onlineStatus);
+    if (detail.isGroup === 1) {
+        chatItemDiv.setAttribute('data-group-id',`g_${detail.recipientID}`);
+    } else if (detail.isGroup === 0) {
+        const friendID = detail.isMe === 1 ? detail.recipientID : detail.requesterID;
+        chatItemDiv.setAttribute('data-friend-id', `f_${friendID}`);
+        chatItemDiv.setAttribute('data-online-status', detail.onlineStatus);
     }
-    
     chatItemDiv.addEventListener('click',async function() {
+        document.getElementById("firstPage").style.display='none';
+        let roomId = generateRoomId(room_manager.userId, room_manager.friendId);
         if (emailIcon && chatItemDiv.contains(emailIcon)) {
             chatItemDiv.removeChild(emailIcon);
             message.style.color='gray';
@@ -163,13 +163,14 @@ function createChatData(detail){
             let avatar=detail.avatar|| "/images/head-shot-default.png";  
             let onlineStatus=detail.onlineStatus;
             show_friendDetails(friendNickName,emailPrefix,moodText,avatar,onlineStatus);
+
             if (detail.isMe === 1) {
-                user_info.user_id=detail.requesterID;
-                user_info.friend_id=detail.recipientID;
+                room_manager.userId=detail.requesterID;
+                room_manager.friendId=detail.recipientID;
             }
             if (detail.isMe === 0) {
-                user_info.user_id=detail.recipientID;
-                user_info.friend_id=detail.requesterID;
+                room_manager.userId=detail.recipientID;
+                room_manager.friendId=detail.requesterID;
             }
             
             user_info.user_nickName=detail.name;
@@ -178,17 +179,26 @@ function createChatData(detail){
             
             fetch_firstPage_personalMessage();
             //根據雙方id生成room
-            let roomId = generateRoomId(user_info.user_id, user_info.friend_id);
+            
+            
+            groupRoom_manager.groupRoomId=0;
             room_manager.roomId=roomId;
             let roomData={
-                requesterID:user_info.user_id,
-                friendId:user_info.friend_id,
+                requesterID:room_manager.userId,
+                friendId:room_manager.userId,
                 requesterNickName:detail.otherNickName,
                 friendNickName:detail.name,
+                friendEmail:detail.email,
+                friendMoodText:detail.moodText,
+                friendAvatar:detail.avatar,
+                friendOnlineStatus:detail.onlineStatus
             }
+            
             room_manager.data=roomData;
+
             socket.emit('joinRoom', roomId);
-            socket.emit('updateReadStatus', { roomId: roomId,friendId:user_info.friend_id,userId:user_info.user_id});
+            socket.emit('updateReadStatus', { roomId: roomId,friendId:room_manager.friendId,userId:room_manager.userId});
+            console.log({ roomId: roomId,friendId:room_manager.friendId,userId:room_manager.userId})
         } else {
             document.getElementById('friendChatRoom').style.display = 'none';
             document.getElementById('groupChatRoom').style.display = 'block';
@@ -206,6 +216,7 @@ function createChatData(detail){
             fetch_firstPage_groupMessage(guildID,user_info.user_id);
             //根據群組id來生成Room id
             let groupRoomId = `g${guildID}`;
+            room_manager.roomId=0
             groupRoom_manager.groupRoomId=groupRoomId;
             groupRoom_manager.groupMember=groupMember;
             groupRoom_manager.data={guildID:guildID,guildName:guildName,guildAvatar:guildAvatar};
@@ -214,3 +225,199 @@ function createChatData(detail){
         }
     });
 }
+socket.on('receiveFriendMessage', (data) => {
+    let friendDivId = `f_${data.requesterID}`;
+    let chatListDiv = document.getElementById('chatList');
+    // 尋找並移除現有的 div
+    let existingDiv = chatListDiv.querySelector(`div[data-friend-id="${friendDivId}"]`);
+    if (existingDiv) {
+        chatListDiv.removeChild(existingDiv);
+    }
+    getNewChatData(data);
+});
+
+function getNewChatData(data){
+    let chatItemDiv = document.createElement('div');
+    chatItemDiv.className = 'chatList__item';
+    chatItemDiv.onlineStatus = data.onlineStatus;
+    chatItemDiv.innerHTML=
+        `<img class="chatList__item__avatar"/>
+        <div>
+            <div class="chatList__item__name"></div>
+            <div class="chatList__item__message"></div>
+        </div>`;
+    let name = chatItemDiv.querySelector('.chatList__item__name');
+    let message = chatItemDiv.querySelector('.chatList__item__message');
+    let avatar = chatItemDiv.querySelector('.chatList__item__avatar');
+    name.textContent = data.requesterNickName;
+    let Avatar;
+    
+    Avatar = data.headshot|| "/images/head-shot-default.png";
+
+    avatar.src = Avatar;
+    if (data.contentType === 'text') {
+        message.textContent = `${data.requesterNickName}:${data.message}`;
+    } else if (data.contentType === 'image') {
+        message.textContent = `${data.requesterNickName}:發送一個圖片`;
+    } else if (data.contentType === 'video') {
+        message.textContent = `${data.requesterNickName}:發送一個影片`;
+    }
+
+    let chatListDiv = document.getElementById('chatList');
+    let onlineStatus=data.onlineStatus;
+    let requesterID = data.recipientID;
+    let recipientID = data.requesterID;
+    let requesterNickName = data.friendNickName;
+    let friendNickName = data.requesterNickName;
+    
+    chatItemDiv.setAttribute('data-friend-id', `f_${recipientID}`);
+    chatItemDiv.setAttribute('data-online-status', onlineStatus);
+    
+    if (chatListDiv.firstChild) {
+        chatListDiv.insertBefore(chatItemDiv, chatListDiv.firstChild);
+    } else {
+        chatListDiv.appendChild(chatItemDiv);
+    }
+    
+
+    let emailIcon;
+    if (data.roomId!==room_manager.roomId) {
+        emailIcon = document.createElement('div');
+        emailIcon.className = "chatList__item__emailIcon";
+        chatItemDiv.appendChild(emailIcon); 
+        message.style.color='black';
+    }
+    
+    let roomId = generateRoomId(recipientID, requesterID);
+    socket.emit('joinRoom', roomId);
+
+    chatItemDiv.addEventListener('click',async function() {
+        document.getElementById("firstPage").style.display='none';
+        if (emailIcon && chatItemDiv.contains(emailIcon)) {
+            chatItemDiv.removeChild(emailIcon);
+            message.style.color='gray';
+        }
+
+        document.getElementById('friendChatRoom').style.display = 'block';
+        document.getElementById('groupChatRoom').style.display = 'none';
+        let emailPrefix=data.email.split('@')[0];
+        let moodText=data.moodText || '心情小語';
+
+        let avatar=data.headshot|| "/images/head-shot-default.png";  
+        
+        show_friendDetails(friendNickName,emailPrefix,moodText,avatar,onlineStatus);
+
+        document.getElementById('messageBox').innerHTML='';
+        document.getElementById('messageInput').value = '';
+        //根據雙方id生成room
+        let roomId = generateRoomId(recipientID, requesterID);
+        room_manager.userId=requesterID;
+        room_manager.friendId=recipientID;
+        room_manager.roomId=roomId;
+
+        fetch_firstPage_personalMessage();
+        
+        let roomData={
+            requesterID:requesterID,
+            friendId:recipientID,
+            requesterNickName:requesterNickName,
+            friendNickName:friendNickName,
+            friendEmail:data.email,
+            friendMoodText:data.moodText,
+            friendAvatar:data.headshot,
+            friendOnlineStatus:data.onlineStatus
+        }
+        room_manager.data=roomData;
+    });
+}
+
+socket.on('receiveFromGroup', (data) => {
+    let groupDivId = `g_${data.guildID}`;
+    let chatListDiv = document.getElementById('chatList');
+    // 尋找並移除現有的 div
+    let existingDiv = chatListDiv.querySelector(`div[data-group-id="${groupDivId}"]`);
+    if (existingDiv) {
+        chatListDiv.removeChild(existingDiv);
+    }
+    getNewGroupChatData(data);
+});
+
+function getNewGroupChatData(data){
+    let chatItemDiv = document.createElement('div');
+    chatItemDiv.className = 'chatList__item';
+
+    chatItemDiv.innerHTML=
+        `<img class="chatList__item__avatar"/>
+        <div>
+            <div class="chatList__item__name"></div>
+            <div class="chatList__item__message"></div>
+        </div>`;
+    let name = chatItemDiv.querySelector('.chatList__item__name');
+    let message = chatItemDiv.querySelector('.chatList__item__message');
+    let avatar = chatItemDiv.querySelector('.chatList__item__avatar');
+    name.textContent = data.guildName;
+    let Avatar;
+    
+    Avatar = data.guildAvatar|| "/images/group.png";
+
+    avatar.src = Avatar;
+    if (data.contentType === 'text') {
+        message.textContent = `${data.requesterNickName}:${data.message}`;
+    } else if (data.contentType === 'image') {
+        message.textContent = `${data.requesterNickName}:發送一個圖片`;
+    } else if (data.contentType === 'video') {
+        message.textContent = `${data.requesterNickName}:發送一個影片`;
+    }
+
+    let chatListDiv = document.getElementById('chatList');
+
+    let guildID = data.guildID;
+    
+    chatItemDiv.setAttribute('data-group-id',`g_${guildID}`);
+    
+    if (chatListDiv.firstChild) {
+        chatListDiv.insertBefore(chatItemDiv, chatListDiv.firstChild);
+    } else {
+        chatListDiv.appendChild(chatItemDiv);
+    }
+    
+
+    let emailIcon;
+    if (data.groupRoomId!==groupRoom_manager.groupRoomId) {
+        emailIcon = document.createElement('div');
+        emailIcon.className = "chatList__item__emailIcon";
+        chatItemDiv.appendChild(emailIcon); 
+        message.style.color='black';
+    }
+    socket.emit('joinGroupRoom', data.groupRoomId);
+
+    chatItemDiv.addEventListener('click',async function() {
+        document.getElementById("firstPage").style.display='none';
+        if (emailIcon && chatItemDiv.contains(emailIcon)) {
+            chatItemDiv.removeChild(emailIcon);
+            message.style.color='gray';
+        }
+
+        document.getElementById('friendChatRoom').style.display = 'none';
+        document.getElementById('groupChatRoom').style.display = 'block';
+        
+        document.getElementById('groupName').textContent = data.guildName;
+        document.getElementById('groupAvatar').src= data.guildAvatar || "/images/group.png";
+        document.getElementById('groupMessageBox').innerHTML='';
+        document.getElementById('groupMessageInput').value='';
+
+        fetch_firstPage_groupMessage(data.guildID,user_info.memberId);
+        let groupRoomId =data.groupRoomId;
+        groupRoom_manager.groupRoomId=groupRoomId;
+        groupRoom_manager.data=data;
+        groupRoom_manager.groupMember = data.groupMember;
+        socket.emit('joinGroupRoom', groupRoomId);
+    });
+}
+
+let chatListDiv = document.getElementById('chatList');
+chatListDiv.addEventListener('scroll', async function() {
+    if (chatListDiv.scrollTop + chatListDiv.clientHeight >= chatListDiv.scrollHeight) {
+        await getChatList_from_database(chatListStatus.page, null);
+    }
+}); 
