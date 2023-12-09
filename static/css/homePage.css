@@ -4,6 +4,8 @@ body {
     font-family: 'Noto Sans', sans-serif;
     font-size: 20px;
     font-weight: 500;
+    padding: 0px;
+    margin: 0px;
 }
 
 .custom-background {
@@ -36,7 +38,7 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
     display: none;
-    transition: top 0.5s ease-in-out;
+    animation: flyIn 0.5s ease-in-out forwards;
 }
 
 #login{
@@ -45,7 +47,7 @@ body {
     transform: translate(-50%, -50%);
     display: block;
 
-    transition: top 0.5s ease-in-out;
+    animation: flyIn 0.5s ease-in-out forwards;
 }
 
 @media (max-width: 600px) {
@@ -102,4 +104,19 @@ body {
 .btn-signOut:hover {
     background-image: linear-gradient(white, #d4b5d4, white);;
     border-color: #6c757d;
+}
+
+@keyframes flyIn {
+    from {
+        top: -100%;
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    to {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+        position: absolute;
+    }
 }

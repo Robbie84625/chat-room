@@ -51,7 +51,7 @@ const setupSocketServer = (server) => {
         });
 
         socket.on('sendGroupMessage', async(data, groupRoomId) => {
-            // await ChatDB.insertGroupMessage(data.guildID,data.userId,data.message,data.groupMember,data.contentType);
+            await ChatDB.insertGroupMessage(data.guildID,data.userId,data.message,data.groupMember,data.contentType);
             io.in(groupRoomId).emit('receiveGroupMessage', data)
         });
 

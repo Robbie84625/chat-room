@@ -132,11 +132,10 @@ async function upload_userInfo(formData){
         userInfoStatus.style.display="block";
         userInfoStatus.innerHTML=data.message;
     }
-    document.getElementById("exitUserInfo").addEventListener("click", () => {
-        const userInfoStatus = document.getElementById("userInfoStatus");
-    
-        userInfoStatus.style.display="none";
-    });
+    setTimeout(function() {
+        document.getElementById("userInfo").style.display = "none";
+        document.getElementById("mask").style.display = "none";
+        }, 1000);
 }
 
 

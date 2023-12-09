@@ -37,8 +37,8 @@ function changeButtonColor(button) {
     }
 }
 
-const socket = io('https://chat-room.robbieliu.com');
-// const socket = io('http://127.0.0.1:4000');
+// const socket = io('https://chat-room.robbieliu.com');
+const socket = io('http://127.0.0.1:4000');
 
 document.addEventListener('DOMContentLoaded', async () => {
     const token = localStorage.getItem('token'); 
