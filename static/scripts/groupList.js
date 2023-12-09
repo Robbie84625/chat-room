@@ -319,7 +319,6 @@ document.getElementById('groupDoorbell').addEventListener('click', function(){
 socket.on('receive_ring_group', (data) => {
     if(groupRoom_manager.groupRoomId!==data.groupRoomId){
         const doorbellNotice = document.querySelector('.doorbellNotice');
-        console.log(data)
         doorbellNotice.style.display = 'none';
         doorbellNotice.innerHTML=`叮咚 !  <span style="color: blue;">${data.guildName}</span>  有人在家嗎 ? `;
         
@@ -356,10 +355,10 @@ socket.on('receive_ring_group', (data) => {
 socket.on('receiveGroupRing', (data) => {
     let audio = new Audio('music/doorbell.mp3');
     audio.play()
-    appendNoticeToBox(data);
+    appendGroupNoticeToBox(data);
 });
 
-function appendNoticeToBox(messageData) {
+function appendGroupNoticeToBox(messageData) {
     const messageBox = document.getElementById('groupMessageBox');
 
     const messageItem = document.createElement('div');

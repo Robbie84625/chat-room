@@ -249,18 +249,20 @@ document.getElementById('personalDoorbell').addEventListener('click', function()
 socket.on('receiveFriendRing', (data) => {
     let audio = new Audio('music/doorbell.mp3');
     audio.play()
+
     appendNoticeToBox(data);
 });
 
-function appendNoticeToBox(messageData) {
+function appendNoticeToBox(data) {
     const messageBox = document.getElementById('messageBox');
 
     const messageItem = document.createElement('div');
     messageItem.classList.add('messageBox__item');
 
     messageItem.innerHTML = `
-        <div class="messageBox__item__ringNotice">${messageData.message}</div>
+        <div class="messageBox__item__ringNotice">${data.message}</div>
     `;
+
     messageBox.appendChild(messageItem);
 }
 
@@ -477,7 +479,6 @@ function chooseFile_to_friend(){
         fileDataUrl = fileData.url;
         fileType = fileData.fileType.split('/')[0];
         sendFile_to_friend(data,data.roomId,fileType,fileDataUrl);
-        console.log(data,data.roomId,fileType,fileDataUrl)
     });
 }
 
