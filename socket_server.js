@@ -59,6 +59,22 @@ const setupSocketServer = (server) => {
             io.in(memberReceiveId).emit('receiveFromGroup', data);
         });
 
+        socket.on('ringFriend', async(data, roomId) => {
+            io.in(roomId).emit('receiveFriendRing', data);
+        });
+
+        socket.on('ringGroup', async(data, roomId) => {
+            io.in(roomId).emit('receiveGroupRing', data);
+        });
+
+        socket.on('ring_friend', async(data, memberReceiveId) => {
+            io.in(memberReceiveId).emit('receive_ring_friend', data);
+        });
+
+        socket.on('ring_group', async(data, memberReceiveId) => {
+            io.in(memberReceiveId).emit('receive_ring_group', data);
+        });
+
         socket.on('sendGroupFile', async(data, roomId) => {
             await ChatDB.insertGroupMessage(data.guildID,data.userId,data.message,data.groupMember,data.contentType);
             io.in(roomId).emit('receiveGroupFile', data);

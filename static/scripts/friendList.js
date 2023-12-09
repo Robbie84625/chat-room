@@ -214,6 +214,56 @@ document.getElementById('messageInput').addEventListener('keydown', (event) => {
     }
 });
 
+let ringStatus = {
+    isRing:false
+}
+document.getElementById('personalDoorbell').addEventListener('click', function(){
+    let data={
+        roomId:room_manager.roomId,
+        requesterID:room_manager.userId,
+        recipientID: room_manager.friendId,
+        requesterNickName:room_manager.data.requesterNickName,
+        friendNickName:room_manager.data.friendNickName,
+        email:user_info.email,
+        moodText:user_info.moodText,
+        headshot:user_info.headshot,
+        onlineStatus:user_info.onlineStatus,
+        message: '叮咚!有人在家嗎 ? '
+    }
+    if (!ringStatus.isRing) {
+        socket.emit('ringFriend', data, data.roomId);
+        ringStatus.isRing = true;
+
+        const memberReceiveId = `m${data.recipientID}`;
+        socket.emit('ring_friend', data, memberReceiveId);
+
+        setTimeout(function() {
+            ringStatus.isRing = false;
+        }, 300000);
+
+    } else {
+        alert('你壞壞!請稍後再試！');
+    }
+});
+
+socket.on('receiveFriendRing', (data) => {
+    let audio = new Audio('music/doorbell.mp3');
+    audio.play()
+    appendNoticeToBox(data);
+});
+
+function appendNoticeToBox(messageData) {
+    const messageBox = document.getElementById('messageBox');
+
+    const messageItem = document.createElement('div');
+    messageItem.classList.add('messageBox__item');
+
+    messageItem.innerHTML = `
+        <div class="messageBox__item__ringNotice">${messageData.message}</div>
+    `;
+    messageBox.appendChild(messageItem);
+}
+
 function change_friendBtn_bg(){
     let friendBtn = document.getElementById("friend-btn")
     friendBtn.style.backgroundColor = "#9370db";
@@ -282,6 +332,67 @@ function updateChatList(myData){
 socket.on('receiveMessage', (data) => {
     appendMessageToBox(data);
 });
+
+socket.on('receive_ring_friend', (data) => {
+    if(room_manager.roomId!==data.roomId){
+        const doorbellNotice = document.querySelector('.doorbellNotice');
+    
+        doorbellNotice.style.display = 'none';
+        doorbellNotice.innerHTML = `<span style="color: blue;">${data.requesterNickName} : </span> ${data.message}`;
+        
+        setTimeout(() => {
+            doorbellNotice.style.display = 'block';
+
+            setTimeout(() => {
+                doorbellNotice.style.display = 'none';
+            }, 5000); 
+        }, 10); 
+
+        doorbellNotice.addEventListener('click',async function() {
+            doorbellNotice.style.display='none';
+            document.getElementById("firstPage").style.display='none';
+
+            document.getElementById('friendChatRoom').style.display = 'block';
+            document.getElementById('groupChatRoom').style.display = 'none';
+            let emailPrefix=data.email.split('@')[0];
+            let moodText=data.moodText || '心情小語';
+
+            let avatar=data.headshot|| "/images/head-shot-default.png";  
+
+            let friendNickName=data.requesterNickName;
+            let myNickName=data.friendNickName;
+
+            let onlineStatus=data.onlineStatus;
+            
+            show_friendDetails(friendNickName,emailPrefix,moodText,avatar,onlineStatus);
+
+            document.getElementById('messageBox').innerHTML='';
+            document.getElementById('messageInput').value = '';
+            
+            room_manager.userId=data.recipientID;
+            room_manager.friendId=data.requesterID;
+            room_manager.roomId=data.roomId;
+
+            fetch_firstPage_personalMessage();
+            socket.emit('joinRoom', data.roomId);
+
+            let roomData={
+                requesterID:room_manager.userId,
+                friendId:room_manager.friendId,
+                requesterNickName:myNickName,
+                friendNickName:friendNickName,
+                friendEmail:data.email,
+                friendMoodText:data.moodText,
+                friendAvatar:data.headshot,
+                friendOnlineStatus:data.onlineStatus
+            }
+            room_manager.data=roomData;
+        });
+    }
+});
+
+
+
 
 function appendMessageToBox(messageData) {
     const messageBox = document.getElementById('messageBox');

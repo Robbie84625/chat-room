@@ -59,10 +59,13 @@ async function getInviteData_from_database(noticePageStatus,contact__loading = n
         } else {
             noticePageStatus.lastPage = true;
         }
-        if ((sendInvite && sendInvite.length < 1) && (receiveInvite && receiveInvite.length < 1) && noticePageStatus.lastPage === false) {
+        if ((sendInvite && sendInvite.length < 1) && 
+            (receiveInvite && receiveInvite.length < 1) && 
+            noticePageStatus.lastPage === true) {
+            noInvite.style.display = 'block';
+        } else if (receiveInvite && !receiveInvite.some(item => item.invitationStatus === "PendingConfirmation")) {
             noInvite.style.display = 'block';
         }
-        
     } catch (error) {
         console.error("Error during login:", error);
         noticePageStatus.isLoading = false;

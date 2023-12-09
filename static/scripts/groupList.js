@@ -284,6 +284,92 @@ document.getElementById('groupMessageInput').addEventListener('keydown', (event)
     socket.emit('updateGroupReadStatus', { roomId: groupRoomId, guildID: guildID ,userId:userId});
 });
 
+let groupRingStatus = {
+    isRing:false
+}
+document.getElementById('groupDoorbell').addEventListener('click', function(){
+    let data={
+        groupRoomId:groupRoom_manager.groupRoomId,
+        guildID:groupRoom_manager.data.guildID,
+        guildName:groupRoom_manager.data.guildName,
+        guildAvatar:groupRoom_manager.data.guildAvatar,
+        groupMember:groupRoom_manager.groupMember,
+        message: '叮咚!有人在家嗎 ? '
+    }
+    if (! groupRingStatus.isRing) {
+        socket.emit('ringGroup', data, data.groupRoomId);
+        groupRingStatus.isRing = true;
+
+        for(let member of groupRoom_manager.groupMember){
+            const memberReceiveId = `m${member.memberID}`;
+            if(memberReceiveId !==`m${user_info.memberId}`){
+                socket.emit('ring_group', data, memberReceiveId);
+            }
+        }
+
+        setTimeout(function() {
+            ringStatus.isRing = false;
+        }, 300000);
+
+    } else {
+        alert('你壞壞!請稍後再試！');
+    }
+});
+
+socket.on('receive_ring_group', (data) => {
+    if(groupRoom_manager.groupRoomId!==data.groupRoomId){
+        const doorbellNotice = document.querySelector('.doorbellNotice');
+        console.log(data)
+        doorbellNotice.style.display = 'none';
+        doorbellNotice.innerHTML=`叮咚 !  <span style="color: blue;">${data.guildName}</span>  有人在家嗎 ? `;
+        
+        setTimeout(() => {
+            doorbellNotice.style.display = 'block';
+
+            setTimeout(() => {
+                doorbellNotice.style.display = 'none';
+            }, 5000); 
+        }, 10); 
+
+        doorbellNotice.addEventListener('click',async function() {
+            doorbellNotice.style.display='none';
+            document.getElementById("firstPage").style.display='none';
+
+            document.getElementById('friendChatRoom').style.display = 'none';
+            document.getElementById('groupChatRoom').style.display = 'block';
+
+            document.getElementById('groupName').textContent = data.guildName;
+            document.getElementById('groupAvatar').src= data.guildAvatar || "/images/group.png";
+            document.getElementById('groupMessageBox').innerHTML='';
+            document.getElementById('groupMessageInput').value='';
+
+            fetch_firstPage_groupMessage(data.guildID,user_info.memberId);
+            let groupRoomId =data.groupRoomId;
+            groupRoom_manager.groupRoomId=groupRoomId;
+            groupRoom_manager.data=data;
+            groupRoom_manager.groupMember = data.groupMember;
+            socket.emit('joinGroupRoom', groupRoomId);
+        });
+    }
+});
+
+socket.on('receiveGroupRing', (data) => {
+    let audio = new Audio('music/doorbell.mp3');
+    audio.play()
+    appendNoticeToBox(data);
+});
+
+function appendNoticeToBox(messageData) {
+    const messageBox = document.getElementById('groupMessageBox');
+
+    const messageItem = document.createElement('div');
+    messageItem.classList.add('messageBox__item');
+
+    messageItem.innerHTML = `
+        <div class="messageBox__item__ringNotice">${messageData.message}</div>
+    `;
+    messageBox.appendChild(messageItem);
+}
 
 socket.on('receiveGroupMessage', (data) => {
     appendGroupMessageToBox(data);

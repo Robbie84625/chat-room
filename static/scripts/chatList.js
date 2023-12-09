@@ -49,7 +49,8 @@ function fetch_firstPage_chatList(chatListLoading){
     chatListLoading.style.display="black";
     chatListAppear();
     getChatList_from_database(page,chatListLoading);
-}isplay='none';
+}
+
 let chatListLoading= document.getElementById("chatListLoading");
 fetch_firstPage_chatList(chatListLoading);
 
@@ -149,7 +150,6 @@ function createChatData(detail){
     }
     chatItemDiv.addEventListener('click',async function() {
         document.getElementById("firstPage").style.display='none';
-        let roomId = generateRoomId(room_manager.userId, room_manager.friendId);
         if (emailIcon && chatItemDiv.contains(emailIcon)) {
             chatItemDiv.removeChild(emailIcon);
             message.style.color='gray';
@@ -172,7 +172,10 @@ function createChatData(detail){
                 room_manager.userId=detail.recipientID;
                 room_manager.friendId=detail.requesterID;
             }
-            
+
+            let roomId = generateRoomId(room_manager.userId, room_manager.friendId);
+            room_manager.roomId=roomId;
+
             user_info.user_nickName=detail.name;
             document.getElementById('messageBox').innerHTML='';
             document.getElementById('messageInput').value = '';
@@ -182,7 +185,7 @@ function createChatData(detail){
             
             
             groupRoom_manager.groupRoomId=0;
-            room_manager.roomId=roomId;
+            
             let roomData={
                 requesterID:room_manager.userId,
                 friendId:room_manager.userId,
@@ -198,7 +201,7 @@ function createChatData(detail){
 
             socket.emit('joinRoom', roomId);
             socket.emit('updateReadStatus', { roomId: roomId,friendId:room_manager.friendId,userId:room_manager.userId});
-            console.log({ roomId: roomId,friendId:room_manager.friendId,userId:room_manager.userId})
+
         } else {
             document.getElementById('friendChatRoom').style.display = 'none';
             document.getElementById('groupChatRoom').style.display = 'block';
