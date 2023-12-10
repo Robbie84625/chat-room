@@ -58,14 +58,14 @@ router.get('/getMessageData', async (req, res) => {
     const decodedToken = jwt.verify(token, secretKey);
     let nextPage=0;
     const AllMessageData = await ChatDB.findAllMessage(decodedToken.userId,pageNumber);
-        if (AllMessageData.length < 11) {
+        if (AllMessageData.length < 12) {
             nextPage = null;
         } else {
             nextPage=pageNumber+1;
         }
         let AllMessageDataResult = {
             "nextPage": nextPage,
-            "data": AllMessageData.slice(0, 10)
+            "data": AllMessageData.slice(0, 11)
         };
         res.send(JSON.stringify(AllMessageDataResult));
 });

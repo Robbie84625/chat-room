@@ -517,7 +517,6 @@ function sendFile_to_friend(data,roomId,fileType,fileDataUrl){
     socket.emit('sendFile', myData, roomId);
     const memberReceiveId = `m${recipientID}`;
     socket.emit('sendMessageToFriend', myData, memberReceiveId);
-    console.log(myData)
     updateChatList(myData);
 };
 
@@ -654,7 +653,7 @@ function loadHistoryMsgToBox(message) {
         <div class="messageBox__item__nickName">${message.requesterNickName} :</div>
         ${htmlContent}
         <div class="messageBox__item__dateAndRead">
-            <div>${readStatus}</div>
+            <div class="read-status">${readStatus}</div>
             <div>${dateTime}</div>
         </div>
     `;
@@ -731,7 +730,7 @@ function sendNewChatData(myData){
     
     chatItemDiv.innerHTML=
         `<img class="chatList__item__avatar"/>
-        <div>
+        <div style='margin:auto 0px;'>
             <div class="chatList__item__name"></div>
             <div class="chatList__item__message"></div>
         </div>`;

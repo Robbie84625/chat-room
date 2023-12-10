@@ -99,7 +99,7 @@ function createChatData(detail){
     chatItemDiv.onlineStatus = detail.onlineStatus;
     chatItemDiv.innerHTML=
         `<img class="chatList__item__avatar"/>
-        <div>
+        <div style='margin:auto 0px;'>
             <div class="chatList__item__name"></div>
             <div class="chatList__item__message"></div>
         </div>`;
@@ -200,7 +200,6 @@ function createChatData(detail){
 
             socket.emit('joinRoom', roomId);
             socket.emit('updateReadStatus', { roomId: roomId,friendId:room_manager.friendId,userId:room_manager.userId});
-
         } else {
             document.getElementById('friendChatRoom').style.display = 'none';
             document.getElementById('groupChatRoom').style.display = 'block';
@@ -244,7 +243,7 @@ function getNewChatData(data){
     chatItemDiv.onlineStatus = data.onlineStatus;
     chatItemDiv.innerHTML=
         `<img class="chatList__item__avatar"/>
-        <div>
+        <div style='margin:auto 0px;'>
             <div class="chatList__item__name"></div>
             <div class="chatList__item__message"></div>
         </div>`;
@@ -350,7 +349,7 @@ function getNewGroupChatData(data){
 
     chatItemDiv.innerHTML=
         `<img class="chatList__item__avatar"/>
-        <div>
+        <div style='margin:auto 0px;'>
             <div class="chatList__item__name"></div>
             <div class="chatList__item__message"></div>
         </div>`;

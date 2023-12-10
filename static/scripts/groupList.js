@@ -215,7 +215,7 @@ function sendNewGroupChatData(socketData){
     
     chatItemDiv.innerHTML=
         `<img class="chatList__item__avatar"/>
-        <div>
+        <div style='margin:auto 0px;'>
             <div class="chatList__item__name"></div>
             <div class="chatList__item__message"></div>
         </div>`;

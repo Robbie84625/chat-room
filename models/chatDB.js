@@ -216,7 +216,7 @@ class ChatDB {
         ORDER BY dateTime DESC
         LIMIT ?, ?;
         `;
-        values = [userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,page*10,11];
+        values = [userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,userId,page*11,12];
         try {
             const queryResults = await pool.query(queryMySQL, values);
             result = queryResults[0]
