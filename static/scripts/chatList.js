@@ -214,7 +214,7 @@ function createChatData(detail){
             let guildAvatar=detail.avatar;
 
             groupMember=await get_groupMember(guildID);
-            fetch_firstPage_groupMessage(guildID,user_info.user_id);
+            fetch_firstPage_groupMessage(guildID,user_info.memberId);
             //根據群組id來生成Room id
             let groupRoomId = `g${guildID}`;
             room_manager.roomId=0
@@ -222,7 +222,7 @@ function createChatData(detail){
             groupRoom_manager.groupMember=groupMember;
             groupRoom_manager.data={guildID:guildID,guildName:guildName,guildAvatar:guildAvatar};
             socket.emit('joinGroupRoom', groupRoomId);
-            socket.emit('updateGroupReadStatus', { roomId: groupRoomId, guildID: guildID ,userId:user_info.user_id});
+            socket.emit('updateGroupReadStatus', { roomId: groupRoomId, guildID: guildID ,userId:user_info.memberId});
         }
     });
 }

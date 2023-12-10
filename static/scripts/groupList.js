@@ -333,6 +333,20 @@ socket.on('receive_ring_group', (data) => {
         }, 10); 
 
         doorbellNotice.addEventListener('click',async function() {
+            const chatRoomElement = document.querySelector(`.chatList__item[data-group-id="g_${data.guildID}"]`);
+            if (chatRoomElement) {
+                const emailIcon = chatRoomElement.querySelector('.chatList__item__emailIcon');
+                const message = chatRoomElement.querySelector('.chatList__item__message');
+                
+                if (emailIcon) {
+                    chatRoomElement.removeChild(emailIcon);
+                }
+            
+                if (message) {
+                    message.style.color = 'gray';
+                }
+            }
+
             doorbellNotice.style.display='none';
             document.getElementById("firstPage").style.display='none';
 
@@ -350,6 +364,7 @@ socket.on('receive_ring_group', (data) => {
             groupRoom_manager.data=data;
             groupRoom_manager.groupMember = data.groupMember;
             socket.emit('joinGroupRoom', groupRoomId);
+            socket.emit('updateGroupReadStatus', { roomId: groupRoomId, guildID: data.guildID ,userId:user_info.memberId});
         });
     }
 });

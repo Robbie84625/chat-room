@@ -379,6 +379,20 @@ socket.on('receive_ring_friend', (data) => {
             room_manager.friendId=data.requesterID;
             room_manager.roomId=data.roomId;
 
+            const chatRoomElement = document.querySelector(`.chatList__item[data-friend-id="f_${room_manager.friendId}"]`);
+            if (chatRoomElement) {
+                const emailIcon = chatRoomElement.querySelector('.chatList__item__emailIcon');
+                const message = chatRoomElement.querySelector('.chatList__item__message');
+                
+                if (emailIcon) {
+                    chatRoomElement.removeChild(emailIcon);
+                }
+            
+                if (message) {
+                    message.style.color = 'gray';
+                }
+            }
+
             fetch_firstPage_personalMessage();
             socket.emit('joinRoom', data.roomId);
 
@@ -393,6 +407,7 @@ socket.on('receive_ring_friend', (data) => {
                 friendOnlineStatus:data.onlineStatus
             }
             room_manager.data=roomData;
+            socket.emit('updateReadStatus', { roomId: room_manager.roomId,friendId:room_manager.friendId,userId:room_manager.userId});
         });
     }
 });
