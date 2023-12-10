@@ -200,6 +200,8 @@ function sendMessage_to_group(guildID,userId,userNickName, message,groupRoomId,g
 };
 
 function updateGroupChatList(socketData){
+    let noChat=document.getElementById('noChat');
+    noChat.style.display='none';
     let groupDivId = `g_${socketData.guildID}`;
     let chatListDiv = document.getElementById('chatList');
     let existingDiv = chatListDiv.querySelector(`div[data-group-id="${groupDivId}"]`);

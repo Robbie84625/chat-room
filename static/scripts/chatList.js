@@ -227,6 +227,8 @@ function createChatData(detail){
     });
 }
 socket.on('receiveFriendMessage', (data) => {
+    let noChat=document.getElementById('noChat');
+    noChat.style.display='none';
     let friendDivId = `f_${data.requesterID}`;
     let chatListDiv = document.getElementById('chatList');
     // 尋找並移除現有的 div
@@ -333,6 +335,8 @@ function getNewChatData(data){
 }
 
 socket.on('receiveFromGroup', (data) => {
+    let noChat=document.getElementById('noChat');
+    noChat.style.display='none';
     let groupDivId = `g_${data.guildID}`;
     let chatListDiv = document.getElementById('chatList');
     // 尋找並移除現有的 div

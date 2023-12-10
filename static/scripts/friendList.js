@@ -322,6 +322,9 @@ function sendMessage_to_friend(data,roomId,message){
 };
 
 function updateChatList(myData){
+    let noChat=document.getElementById('noChat');
+    noChat.style.display='none';
+    
     let friendDivId = `f_${myData.recipientID}`;
     let chatListDiv = document.getElementById('chatList');
     // 尋找並移除現有的 div
