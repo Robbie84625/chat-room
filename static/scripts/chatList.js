@@ -114,7 +114,6 @@ function createChatData(detail){
     else{
         Avatar = detail.avatar|| "/images/head-shot-default.png";
     }
-
     avatar.src = Avatar;
     if (detail.contentType === 'text') {
         if (detail.isMe === 1) {

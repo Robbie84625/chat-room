@@ -233,7 +233,7 @@ function sendNewGroupChatData(socketData){
     } else if (socketData.contentType === 'image') {
         message.textContent = '你:發送一個圖片';
     } else if (socketData.contentType=== 'video') {
-        socketData.message.textContent = '你:發送一個影片';
+        message.textContent = '你:發送一個影片';
     }
 
     let chatListDiv = document.getElementById('chatList');

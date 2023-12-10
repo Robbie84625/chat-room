@@ -217,6 +217,7 @@ document.getElementById('messageInput').addEventListener('keydown', (event) => {
 let ringStatus = {
     isRing:false
 }
+
 document.getElementById('personalDoorbell').addEventListener('click', function(){
     let data={
         roomId:room_manager.roomId,
@@ -516,6 +517,7 @@ function sendFile_to_friend(data,roomId,fileType,fileDataUrl){
     socket.emit('sendFile', myData, roomId);
     const memberReceiveId = `m${recipientID}`;
     socket.emit('sendMessageToFriend', myData, memberReceiveId);
+    console.log(myData)
     updateChatList(myData);
 };
 
@@ -741,12 +743,13 @@ function sendNewChatData(myData){
     Avatar =room_manager.data.friendAvatar|| "/images/head-shot-default.png";
 
     avatar.src = Avatar;
+
     if (myData.contentType === 'text') {
         message.textContent = `你:${myData.message}`;
     } else if (myData.contentType === 'image') {
         message.textContent = '你:發送一個圖片';
-    } else if (myData.contentType=== 'video') {
-        myData.message.textContent = '你:發送一個影片';
+    } else if (myData.contentType === 'video') {
+        message.textContent = '你:發送一個影片';
     }
 
     let chatListDiv = document.getElementById('chatList');
