@@ -27,6 +27,6 @@
 ![send message to group and ring](https://github.com/Robbie84625/chat-room/blob/develop/static/images/README/sendMessageToGroup_and_ring.gif)
 ## 附加功能
 #### 更改個人檔案
-![Change profile](https://github.com/Robbie84625/chat-room/blob/develop/static/images/README/edit_member_data.gif?raw=true)
+![Change profile](https://github.com/Robbie84625/chat-room/blob/develop/static/images/README/edit_profile.gif?raw=true)
 ## 架構圖
 ![Architecture diagram](https://github.com/Robbie84625/chat-room/blob/develop/static/images/README/%E5%B0%88%E6%A1%88%E6%9E%B6%E6%A7%8B%E5%9C%96.png?raw=true)
